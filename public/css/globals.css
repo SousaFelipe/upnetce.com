@@ -1,0 +1,151 @@
+
+
+
+:root {
+
+    --ui-color-text-primary:    #263238;
+    --ui-color-text-secondary:  #607D8B;
+    --ui-color-text-disabled:   #90A4AE;
+    --ui-color-border:          #CFD8DC;
+    --ui-color-light:           #F5F5F5;
+
+}
+
+
+
+/*
+ * CORES
+ */
+
+.ixs-light {
+    background-color: var(--bs-white) !important;
+}
+
+.ixs-hover-light:hover {
+    transition:         150ms;
+    background-color:   var(--bs-light) !important;
+}
+
+
+
+.ixs-text-dark {
+    color: var(--bs-dark) !important;
+}
+
+.ixs-text-primary {
+    color: var(--bs-primary) !important;
+}
+
+.ixs-text-secondary {
+    color: var(--bs-secondary) !important;
+}
+
+.ixs-text-danger {
+    color: var(--bs-danger) !important;
+}
+
+.ixs-text-disabled {
+    color: var(--bs-gray) !important;
+}
+
+
+
+.ixs-border-primary {
+    border: 1px solid var(--bs-primary);
+}
+
+.ixs-border-secondary {
+    border: 1px solid var(--bs-secondary);
+}
+
+.ixs-border-success {
+    border: 1px solid var(--bs-success);
+}
+
+.ixs-border-danger {
+    border: 1px solid var(--bs-danger);
+}
+
+
+/*
+ * ASSETS
+ */
+
+img[class*="avatar"] {
+    width:          42px;
+    height:         42px;
+    border-radius:  50%;
+}
+
+
+
+/*
+ * MISSELANIOUS
+ */
+
+.clickable {
+    cursor: pointer;
+}
+
+.override-hidden {
+    overflow:       hidden !important;
+    white-space:    nowrap !important;
+}
+
+.override-pills {
+    overflow:       hidden !important;
+    white-space:    nowrap !important;
+    text-overflow:  ellipsis !important;
+}
+
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+
+
+/*
+ * TEXTO
+ */
+
+.fs-7 {
+    font-size: 0.8rem;
+}
+
+
+
+@media (max-width: 575.98px) {
+    :root {
+        --ui-card-md-w:         100%;
+        --search-content-with:  100%;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    :root {
+        --ui-card-md-w:         24em;
+        --search-content-with:  560px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    :root {
+        --ui-card-md-w:         26em;
+        --search-content-with:  560px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    :root {
+        --ui-card-md-w:         26em;
+        --search-content-with:  560px;
+    }
+}
+
+@media (min-width: 1200px) {
+    :root {
+        --ui-card-md-w:         30em;
+        --search-content-with:  700px;
+    }
+}

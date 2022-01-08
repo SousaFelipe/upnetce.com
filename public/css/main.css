@@ -1,0 +1,6 @@
+@import url('../vendor/bootstrap/css/bootstrap.css');
+@import url('../vendor/fontawesome/css/all.min.css');
+@import url('./globals.css');
+@import url('./settings.css');
+@import url('./custom.css');
+@import url('./responsive.css');

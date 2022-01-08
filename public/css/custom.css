@@ -1,0 +1,134 @@
+
+
+
+.ui-card-md {
+    width: var(--ui-card-md-w);
+}
+
+
+
+.ixs-form-content {
+    width: var(--search-content-with);
+}
+
+.ixs-form-group {
+    display:        flex;
+    flex-direction: column;
+    border:         none;
+    border-radius:  1rem;
+    background:     var(--bs-light);
+    transition:     300ms;
+}
+
+.ixs-form-group:focus-within {
+    background-color:   white;
+    -webkit-box-shadow: 1px 1px 0.3rem 0 rgba(0,0,0,0.175);
+    -moz-box-shadow:    1px 1px 0.3rem 0 rgba(0,0,0,0.175);
+    box-shadow:         1px 1px 0.3rem 0 rgba(0,0,0,0.175);
+}
+
+.ixs-form-label {
+    position:       absolute;
+    margin-left:    -0.2rem;
+    margin-top:     -0.3rem;
+    border-radius:  0.3em;
+    padding:        0rem 0.5rem;
+    font-size:      0.6rem;
+    color:          white;
+}
+
+.ixs-form {
+    display:            flex;
+    align-items:        center;
+    padding:            0.8rem 1.1rem;
+    color:              var(--bs-dark);
+    font-size:          1rem;
+    font-weight:        400;
+    line-height:        1.5;
+    background-clip:    padding-box;
+    -webkit-appearance: none;
+    -moz-appearance:    none;
+    appearance:         none;
+    transition:         border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.ixs-form > input:focus {
+    outline: none;
+}
+
+.ixs-form-icon {
+    color: var(--ui-color-text-disabled);
+}
+
+.ixs-form-control {
+    display:            inline-block;
+    flex-grow:          1;
+    justify-self:       stretch;
+    align-self:         center;
+    background-color:   transparent;
+    margin:             0em 0em 0em .75em;
+    border:             none;
+    vertical-align:     middle;
+    overflow:           hidden !important;
+    white-space:        nowrap !important;
+    text-overflow:      ellipsis !important;
+}
+
+
+
+.ixs-rounded {
+    border-radius: 50%;
+}
+
+
+
+.ixs-icon-content-sm {
+    width:  36px;
+    height: 36px;
+}
+
+.ixs-icon-content-md {
+    width:  64px;
+    height: 64px;
+}
+
+
+
+.skeleton.loading {
+    position:           relative;
+    overflow:           hidden;
+    color:              transparent;
+    background-color:   var(--ui-color-light);
+}
+
+.skeleton.loading::before {
+    content:    '';
+    display:    block;
+    position:   absolute;
+    left:       -150px;
+    top:        0;
+    height:     100%;
+    width:      150px;
+    background: linear-gradient(to right, transparent 0%, #E8E8E8 50%, transparent 100%);
+    animation:  load 1s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+}
+
+
+
+.ui-shadow {
+    -webkit-box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.175);
+    -moz-box-shadow:    1px 1px 3px 0px rgba(0,0,0,0.175);
+    box-shadow:         1px 1px 3px 0px rgba(0,0,0,0.175);
+}
+
+
+
+@keyframes load {
+    from {
+        left: -150px;
+    }
+    to {
+        left: 100%;
+    }
+}
+
