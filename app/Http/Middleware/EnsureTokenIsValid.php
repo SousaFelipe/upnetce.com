@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 
 use App\Models\Session;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ErrorController;
 
 use Illuminate\Http\Request;
 
@@ -24,7 +24,7 @@ class EnsureTokenIsValid
         $headerToken = $request->header('authentication');
 
         if (( ! $headerToken) || Session::isInvalid($headerToken)) {
-            return Controller::unauthorized();
+            return ErrorController::unauth();
         }
 
         return $next($request);

@@ -39,9 +39,7 @@ class Controller extends BaseController
 
     protected function unauthorized($json = true)
     {
-        return $json
-            ? response()->json([ 401 => 'Unauthorized' ])
-            : "View::";
+        return ErrorController::unauth($json);
     }
 
 
