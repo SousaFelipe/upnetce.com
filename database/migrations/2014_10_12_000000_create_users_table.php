@@ -18,6 +18,8 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('provedor')->nullable();
+            $table->bigInteger('id_ixc');
+            $table->enum('tipo', ['U', 'V'])->default('U');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
