@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Middleware\EnsureTokenIsValid;
 
 use App\Http\Controllers\API\ClearMAC\ClienteController as ClienteClearMAC;
@@ -51,7 +52,10 @@ Route::prefix('/darth')->namespace('App\\Http\\Controllers\\Darth')->group(funct
 
     Route::prefix('/cadastros')->middleware('auth.token')->group(function () {
 
-        Route::get('/clientes', [ClienteCadastro::class, 'buscar']);
+        Route::get('/clientes/listar', [ClienteCadastro::class, 'listar']);
+        Route::post('/clientes/criar', [ClienteCadastro::class, 'criar']);
+        Route::put('/clientes/editar', [ClienteCadastro::class, 'editar']);
+        Route::delete('/clientes/remover', [ClienteCadastro::class, 'remover']);
 
     });
 

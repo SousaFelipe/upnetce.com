@@ -25,13 +25,14 @@ class User extends Authenticatable
 
     public static function auth(Request $request)
     {
-        $token = $request->header('authentication');
+        $token = $request->header('Authorization');
 
-        if ( ! Session::isInvalid($token)) {
-            $user = User::where('ixc_token', $token);
-            return $user;
+        if (Session::isInvalid($token)) {
+            return false;
         }
 
-        return false;
+        $user = User::where('ixc_token', $token)->first();
+
+        return $user;
     }
 }

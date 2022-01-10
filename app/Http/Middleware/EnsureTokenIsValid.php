@@ -21,7 +21,7 @@ class EnsureTokenIsValid
      */
     public function handle(Request $request, Closure $next)
     {
-        $headerToken = $request->header('authentication');
+        $headerToken = $request->header('Authorization');
 
         if (( ! $headerToken) || Session::isInvalid($headerToken)) {
             return ErrorController::unauth();
