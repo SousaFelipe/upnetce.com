@@ -19,7 +19,7 @@ class EnsureTokenIsValid
      * @param  \Closure $next
      * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, ...$guards)
     {
         $headerToken = $request->header('Authorization');
 

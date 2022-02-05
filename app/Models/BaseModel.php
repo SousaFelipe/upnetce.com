@@ -28,9 +28,23 @@ class BaseModel extends Model
 
 
 
-    public function __construct ($token)
+    /**
+     * 
+     */
+    public function assign($token)
     {
         $this->token = $token;
+        return $this;
+    }
+
+    
+
+    /**
+     * 
+     */
+    public function target($column = 'id')
+    {
+        return ($this->srcname . '.' . $column);
     }
 
 
@@ -123,9 +137,9 @@ class BaseModel extends Model
 
 
 
-    public function prepare($change = false)
+    public function prepare()
     {
-        $this->ixc = new IXCClient();
+        $this->ixc = new IXCClient($this->token);
 
         if ($this->orderBy === false) {
             $this->orderBy = $this->srcname . '.id';
@@ -133,11 +147,11 @@ class BaseModel extends Model
 
         if ($this->advanced) {
             $this->when = array(
-                'grid_param' => json_encode($this->grid),
                 'page'       => $this->in,
                 'rp'         => $this->max,
                 'sortname'   => $this->orderBy,
-                'sortorder'  => $this->order
+                'sortorder'  => $this->order,
+                'grid_param' => json_encode($this->grid)
             );
         }
         else {
@@ -182,7 +196,7 @@ class BaseModel extends Model
 
     public function change($data, $target)
     {
-        $this->ixc = new IXCClient();
+        $this->ixc = new IXCClient($this->token);
         $this->ixc->put($this->srcname, $data, $target);
         return $this->ixc->getRespostaConteudo();
     }
@@ -195,7 +209,7 @@ class BaseModel extends Model
             return [];
         }
 
-        $this->ixc = new IXCClient();
+        $this->ixc = new IXCClient($this->token);
         $this->ixc->post($this->srcname, $post);
 
         $data = $this->ixc->getRespostaConteudo();

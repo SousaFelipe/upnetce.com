@@ -13,26 +13,42 @@ class ClienteController extends Controller
 {
     public function listar(Request $request)
     {
-        $user = User::auth($request);
+        if (($user = User::auth($request)) != false) {
+            
 
-        return $this->json($user, 'user');
+        }
+        
+        return $this->unauthorized();
     }
 
 
     public function criar(Request $request)
     {
-        $user = User::auth($request);
+        if (($user = User::auth($request)) != false) {
+            
+            
+        }
+        
+        return $this->unauthorized();
     }
 
 
     public function editar(Request $request)
     {
-        $user = User::auth($request);
+        if (($user = User::auth($request)) != false) {
+            
+        }
+        
+        return $this->unauthorized();
     }
 
 
     public function remover(Request $request)
     {
-        $user = User::auth($request);
+        if (($user = User::auth($request)) != false) {
+            
+        }
+        
+        return $this->unauthorized();
     }
 }

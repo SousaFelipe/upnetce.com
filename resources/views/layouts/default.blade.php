@@ -3,11 +3,15 @@
 
     @include('includes.head')
 
-    <body style="height: 100vh;">
+    <body class="text-center" style="height: 100vh;">
+
+        @yield('alerts')
 
         @yield('content')
 
         @include('includes.scripts')
+
+        @yield('layout-scripts')
 
     </body>
 </html>

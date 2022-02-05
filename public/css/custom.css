@@ -1,134 +1,93 @@
 
 
-
-.ui-card-md {
-    width: var(--ui-card-md-w);
-}
-
-
-
-.ixs-form-content {
-    width: var(--search-content-with);
-}
-
-.ixs-form-group {
-    display:        flex;
-    flex-direction: column;
-    border:         none;
-    border-radius:  1rem;
-    background:     var(--bs-light);
-    transition:     300ms;
-}
-
-.ixs-form-group:focus-within {
-    background-color:   white;
-    -webkit-box-shadow: 1px 1px 0.3rem 0 rgba(0,0,0,0.175);
-    -moz-box-shadow:    1px 1px 0.3rem 0 rgba(0,0,0,0.175);
-    box-shadow:         1px 1px 0.3rem 0 rgba(0,0,0,0.175);
-}
-
-.ixs-form-label {
-    position:       absolute;
-    margin-left:    -0.2rem;
-    margin-top:     -0.3rem;
-    border-radius:  0.3em;
-    padding:        0rem 0.5rem;
-    font-size:      0.6rem;
-    color:          white;
-}
-
-.ixs-form {
+.alert-container {
+    position:           absolute;
     display:            flex;
+    justify-content:    center;
+    width:              100%;
+    margin-top:         -200px;
+    padding-top:        30px;
+}
+
+.alert {
+    display:            flex;
+    justify-content:    flex-start;
     align-items:        center;
-    padding:            0.8rem 1.1rem;
-    color:              var(--bs-dark);
-    font-size:          1rem;
-    font-weight:        400;
-    line-height:        1.5;
-    background-clip:    padding-box;
-    -webkit-appearance: none;
-    -moz-appearance:    none;
-    appearance:         none;
-    transition:         border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    padding:            10px 10px 10px 20px;
+    border-radius:      8px;
 }
 
-.ixs-form > input:focus {
-    outline: none;
+.alert > button.btn-close-widget {
+    transition: background-color 0.2s ease-in;
+    cursor:     pointer;
+    *cursor:    hand;
 }
 
-.ixs-form-icon {
-    color: var(--ui-color-text-disabled);
+
+.alert.warning,
+.alert.warning > button {
+    background-color: #FFC107;
 }
 
-.ixs-form-control {
-    display:            inline-block;
-    flex-grow:          1;
-    justify-self:       stretch;
-    align-self:         center;
-    background-color:   transparent;
-    margin:             0em 0em 0em .75em;
+.alert.warning > button > i {
+    transition: color 0.2s ease-in;
+    color:      #8B6900;
+}
+
+.alert.warning > button:hover { background-color: #C7990E; }
+
+
+.alert.danger,
+.alert.danger > button {
+    background-color: #DC3545;
+}
+
+.alert.danger > button > i {
+    transition: color 0.2s ease-in;
+    color:      #9B0C1A;
+}
+
+.alert.danger > button:hover { background-color: #BB1D2D; }
+
+
+
+.btn-close-widget {
+    display:            flex;
+    justify-content:    center;
+    align-items:        center;
+    width:              32px;
+    height:             32px;
+    margin-left:        20px;
+    border-radius:      4px;
     border:             none;
-    vertical-align:     middle;
-    overflow:           hidden !important;
-    white-space:        nowrap !important;
-    text-overflow:      ellipsis !important;
+    outline:            none;
 }
 
 
 
-.ixs-rounded {
-    border-radius: 50%;
-}
+.link { text-decoration: none; }
 
 
 
-.ixs-icon-content-sm {
-    width:  36px;
-    height: 36px;
-}
-
-.ixs-icon-content-md {
-    width:  64px;
-    height: 64px;
-}
-
-
-
-.skeleton.loading {
-    position:           relative;
-    overflow:           hidden;
-    color:              transparent;
-    background-color:   var(--ui-color-light);
-}
-
-.skeleton.loading::before {
-    content:    '';
-    display:    block;
-    position:   absolute;
-    left:       -150px;
-    top:        0;
-    height:     100%;
-    width:      150px;
-    background: linear-gradient(to right, transparent 0%, #E8E8E8 50%, transparent 100%);
-    animation:  load 1s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
-}
-
-
-
-.ui-shadow {
-    -webkit-box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.175);
-    -moz-box-shadow:    1px 1px 3px 0px rgba(0,0,0,0.175);
-    box-shadow:         1px 1px 3px 0px rgba(0,0,0,0.175);
-}
-
-
-
-@keyframes load {
-    from {
-        left: -150px;
+@keyframes placeHolderShimmer {
+    0% {
+        background-position: -468px 0
     }
-    to {
-        left: 100%;
+    100% {
+        background-position: 468px 0
     }
 }
 
+
+
+.wrap-loader.loading {
+    animation-duration:         1.25s;
+    animation-fill-mode:        forwards;
+    animation-iteration-count:  infinite;
+    animation-name:             placeHolderShimmer;
+    animation-timing-function:  linear;
+    background:                 #D9E2E2;
+    background:                 linear-gradient(to right, #F8F9FA 8%, #D9E2E2 18%, #F4F5F7 33%);
+    background-size:            800px 104px;
+    position:                   relative;
+}

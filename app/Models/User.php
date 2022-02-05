@@ -35,4 +35,18 @@ class User extends Authenticatable
 
         return $user;
     }
+
+
+
+    public function name()
+    {
+        return $this->name;
+    }
+
+
+
+    public function email()
+    {
+        return $this->email;
+    }
 }

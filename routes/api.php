@@ -1,14 +1,13 @@
 <?php
 
 
-use App\Http\Middleware\EnsureTokenIsValid;
-
 use App\Http\Controllers\API\ClearMAC\ClienteController as ClienteClearMAC;
 use App\Http\Controllers\API\ClearMAC\ContratoController;
 use App\Http\Controllers\API\ClearMAC\RadUsuariosController;
 
 use App\Http\Controllers\Darth\AuthController;
 use App\Http\Controllers\Darth\Cadastros\ClienteController as ClienteCadastro;
+use App\Http\Controllers\Darth\Cadastros\ClienteContratoController as ClienteContratoCadastro;
 
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +55,11 @@ Route::prefix('/darth')->namespace('App\\Http\\Controllers\\Darth')->group(funct
         Route::post('/clientes/criar', [ClienteCadastro::class, 'criar']);
         Route::put('/clientes/editar', [ClienteCadastro::class, 'editar']);
         Route::delete('/clientes/remover', [ClienteCadastro::class, 'remover']);
+
+        Route::get('/contratos/listar', [ClienteContratoCadastro::class, 'listar']);
+        Route::post('/contratos/criar', [ClienteContratoCadastro::class, 'criar']);
+        Route::put('/contratos/editar', [ClienteContratoCadastro::class, 'editar']);
+        Route::delete('/contratos/remover', [ClienteContratoCadastro::class, 'remover']);
 
     });
 

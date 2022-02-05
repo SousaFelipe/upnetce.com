@@ -16,8 +16,11 @@ class CreateCategoriasTable extends Migration
         Schema::create('categorias', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('provedor');
-
+            $table->bigInteger('user');
+            $table->bigInteger('categoria')->nullable();
             $table->string('nome');
+            $table->enum('tipo', ['R', 'D'])->default('D');
+            $table->enum('fixa', ['S', 'N'])->default('N');
         });
     }
 
