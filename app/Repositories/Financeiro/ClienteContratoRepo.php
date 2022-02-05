@@ -25,7 +25,7 @@ class ClienteContratoRepo extends Repository
 
         if ($fetchPlano) {
             for ($c = 0; $c < count($contratos); $c++) { 
-                $contratos[$c]['plano'] = VdContratoRepo::queryByContrato($provedor, $token, $contratos[$c]['id']);
+                $contratos[$c]['plano'] = VdContratoRepo::queryByContrato($provedor, $token, $contratos[$c]['id_vd_contrato']);
             }
         }
 

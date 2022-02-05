@@ -11,7 +11,7 @@ use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
 {
-    public function handle(Request $request, Closure $next, ...$guards)
+    public function handle($request, Closure $next, ...$guards)
     {
         if ( ! Auth::check()) {
             return redirect()->route('financeiro.auth')->with('login', 'Erro de autenticação.');

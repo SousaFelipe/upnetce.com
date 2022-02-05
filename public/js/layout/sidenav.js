@@ -258,21 +258,21 @@ let startSearchClientes = function (slug) {
 
         new Request(`cadastros/clientes/listar/${ slug }`)
             .get(response => {
-                clientes = response.clientes
 
-                let card = null
-            
-                clientes.forEach(cliente => {
-                    console.log(cliente)
+                response.clientes.forEach(cliente => {
 
-                    card = new Card()
-                        .classes('text-dark bg-light ms-4 me-4 mt-1 mb-1')
-                        .render(`
-                            ${ getRenderedClienteData(cliente) }
-                            ${ getRenderedLoginContrato(cliente.logins, cliente.contratos) }
-                        `)
+                    $(new Card(cliente.id).classes('text-dark bg-light ms-4 me-4 mt-2 mb-1').render(getRenderedClienteData(cliente)))
+                        .appendTo($('#search-result-items'))
 
-                    $(card).appendTo($('#search-result-items'))
+                    if (cliente.ordens_de_servico && cliente.ordens_de_servico.length > 0) {
+                        $(`<span class="badge rounded-pill bg-info ms-1"><i data-feather="tool"></i></span>`)
+                            .appendTo($(`#card-body-alerts-${ cliente.id }`))
+                    }
+
+                    if (cliente.alerta && cliente.alert != '') {
+                        $(`<span class="badge rounded-pill bg-warning ms-1"><i data-feather="alert-triangle"></i></span>`)
+                            .appendTo($(`#card-body-alerts-${ cliente.id }`))
+                    }
                 })
                 
                 feather.replace({ 'aria-hidden': 'true' })

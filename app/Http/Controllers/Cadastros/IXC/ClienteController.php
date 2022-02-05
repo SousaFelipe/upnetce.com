@@ -19,8 +19,7 @@ class ClienteController extends Controller
             $user->provedor,
             $user->ixc_token,
             $request->slug,
-            true,
-            true
+            100
         );
 
         return $this->json($clientes, 'clientes');

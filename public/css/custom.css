@@ -65,6 +65,31 @@
 
 
 
+.card-alerts {
+    position:           absolute;
+    display:            flex;
+    justify-content:    flex-end;
+    right:              -6px;
+    top:                -6px;
+}
+
+
+
+*[class*="feather"] { vertical-align: text-bottom; }
+
+.feather-sm {
+    width:  10px;
+    height: 10px;
+}
+
+.feather,
+.feather-md {
+    width:  16px;
+    height: 16px;
+}
+
+
+
 .link { text-decoration: none; }
 
 

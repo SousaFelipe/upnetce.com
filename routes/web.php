@@ -6,6 +6,8 @@ use App\Http\Controllers\AppController;
 
 use App\Http\Controllers\Cadastros\IXC\ClienteController as IXCClienteController;
 
+use App\Http\Controllers\Suporte\IXC\OsController as IXCOsController;
+
 use App\Http\Controllers\Financeiro\AuthController as FnAuthController;
 use App\Http\Controllers\Financeiro\AppController as FnController;
 use App\Http\Controllers\Financeiro\CategoriaController as FnCategoriaController;
@@ -32,6 +34,16 @@ Route::prefix('/cadastros')->name('cadastros.')->group(function () {
 
     Route::prefix('/clientes')->group(function () {
         Route::get('/listar/{slug}', [IXCClienteController::class, 'listar']);
+    });
+
+});
+
+
+
+Route::prefix('/suporte')->name('suporte.')->group(function () {
+
+    Route::prefix('/oss')->group(function () {
+        Route::get('/listar/{id_cliente}', [IXCOsController::class, 'listar']);
     });
 
 });

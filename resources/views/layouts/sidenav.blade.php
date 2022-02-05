@@ -67,8 +67,11 @@
             <a class="navbar-brand text-white" href="/financeiro/dashboard">
                 <strong>Darth</strong> <small>&#x276F;</small> {{ Auth::user()->name() }}
             </a>
-            <div class="flex-grow-1 ps-1">
-                <input type="text" id="search-control" class="form-control form-control-dark" placeholder="Nome ou CPF do (a) cliente..." aria-label="Nome ou CPF do (a) cliente...">
+            <div class="navbar-search-control flex-grow-1">
+                <input type="text" id="search-control" class="search-control" placeholder="Nome ou CPF do (a) cliente..." aria-label="Nome ou CPF do (a) cliente...">
+                <button type="button" class="btn btn-default btn-sm text-white mb-1" onclick="closeSearch()">
+                    <i data-feather="x"></i>
+                </button>
             </div>
             <div class="navbar-nav">
                 <div class="nav-item text-nowrap">
@@ -79,18 +82,16 @@
             </div>
         </header>
 
-        <div id="search-container">
-            <header>
-                <button type="button" class="btn btn-sm btn-default" onclick="closeSearch()">
-                    <span data-feather="x"></span>
-                </button>
-            </header>
-            <div id="search-result-items">
+        <div id="search-container" class="container-fluid">
+            <div class="row justify-content-center">
+                <div id="search-result-items" class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
+                    
+                </div>
             </div>
         </div>
 
         <div id="wrap" class="container-fluid">
-            <div class="row">
+            <div class="row justify-content-center">
 
                 <nav id="sidebarMenu" class="d-md-block bg-light sidebar collapse">
                     <div class="position-sticky pt-3">
@@ -131,7 +132,7 @@
             
                 </nav>
 
-                <main class="col-12">
+                <main class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
 
                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <h1 class="h2">@yield('page')</h1>

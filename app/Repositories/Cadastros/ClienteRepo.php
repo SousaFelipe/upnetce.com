@@ -5,6 +5,7 @@ namespace App\Repositories\Cadastros;
 use App\Repositories\Repository;
 use App\Repositories\Financeiro\ClienteContratoRepo;
 use App\Repositories\Provedor\LoginRepo;
+use App\Repositories\Suporte\OrdemDeServicoRepo;
 
 use App\Models\Cadastros\Cliente;
 
@@ -33,7 +34,7 @@ class ClienteRepo extends Repository
 
 
 
-    public static function queryBySlug($provedor, $token, $query, $fetchContratos = false, $fetchLogins = false, $max = 20)
+    public static function queryBySlug($provedor, $token, $query, $max = 20)
     {
         $queryType = self::getQueryType($query);
         $oper = (($query == 'cnpj_cpf') ? '=' : 'LE');
@@ -45,18 +46,16 @@ class ClienteRepo extends Repository
             ->max($max)
             ->filter(self::$FILTER);
 
-        if ($fetchContratos) {
-            for ($i = 0; $i < count($clientes); $i++) {
-                $contratos = ClienteContratoRepo::queryByCliente($provedor, $token, $clientes[$i]['id'], true);
-                $clientes[$i]['contratos'] = $contratos;
-            }
-        }
+        for ($i = 0; $i < count($clientes); $i++) {
+            
+            $contratos = ClienteContratoRepo::queryByCliente($provedor, $token, $clientes[$i]['id'], true);
+            $clientes[$i]['contratos'] = $contratos;
 
-        if ($fetchLogins) {
-            for ($i = 0; $i < count($clientes); $i++) { 
-                $logins = LoginRepo::queryByCliente($provedor, $token, $clientes[$i]['id']);
-                $clientes[$i]['logins'] = $logins;
-            }
+            $logins = LoginRepo::queryByCliente($provedor, $token, $clientes[$i]['id']);
+            $clientes[$i]['logins'] = $logins;
+
+            $oss = OrdemDeServicoRepo::queryAbertasByCliente($provedor, $token, $clientes[$i]['id']);
+            $clientes[$i]['ordens_de_servico'] = $oss;
         }
 
         return $clientes;
