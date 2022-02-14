@@ -101,7 +101,9 @@ $(function () {
                 const now = new Date()
 
                 return {
-                    currentMonth: () => MONTHS[now.getMonth()]
+                    currentMonth: () => MONTHS[now.getMonth()],
+                    today: () => now.toLocaleDateString(),
+                    date: () => now
                 }
             }
         }

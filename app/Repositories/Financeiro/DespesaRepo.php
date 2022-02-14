@@ -8,37 +8,110 @@ use App\Models\Financeiro\Despesa;
 
 class DespesaRepo extends Repository
 {
+    private static $FILTER = [
+        'codigo_barras',
+        'data_cancelamento',
+        'data_emissao',
+        'data_pagamento',
+        'data_vencimento',
+        'debido_data',
+        'documento',
+        'filial_id',
+        'id',
+        'id_conta',
+        'id_contas',
+        'id_entrada',
+        'id_fornecedor',
+        'obs',
+        'previsao',
+        'status',
+        'tipo_pagamento',
+        'valor',
+        'valor_aberto',
+        'valor_cancelado',
+        'valor_pago',
+        'valor_total_pago'
+    ];
+
+
+
     public static function create(array $novaDespesa)
+    {
+        
+    }
+
+
+
+    public static function sync(array $dessincronizado)
     {
 
     }
 
 
 
-    public static function queryByPeriodo($provedor, $start, $end)
+    public static function queryByPeriodo($user, $start, $final)
     {
         $eloquent = self::bind(Despesa::class)
-            ->where('provedor', $provedor);
+            ->assign($user->ixc_token);
+        
+        $despesas = [
 
-        $abertas = $eloquent
-            ->where('status', 'A')
-            ->whereBetween('data_abertura', [$start, $end])
-            ->get();
+            'canceladas' => $eloquent
+                ->grid([
+                    'TB' => 'fn_apagar.status',
+                    'OP' => '=',
+                    'P'  => 'C'
+                ], [
+                    'TB' => 'fn_apagar.data_vencimento',
+                    'OP' => '>=',
+                    'P'  => $start
+                ], [
+                    'TB' => 'fn_apagar.data_vencimento',
+                    'OP' => '<=',
+                    'P'  => $final
+                ])
+                ->max(10000)
+                ->orderBy('data_cancelamento', 'asc')
+                ->filter(self::$FILTER),
 
-        $agendadas = $eloquent
-            ->where('status', 'A')
-            ->whereBetween('data_agendamento', [$start, $end])
-            ->get();
+            'em_aberto' => $eloquent
+                ->grid([
+                    'TB' => 'fn_apagar.status',
+                    'OP' => '=',
+                    'P'  => 'A'
+                ], [
+                    'TB' => 'fn_apagar.data_vencimento',
+                    'OP' => '>=',
+                    'P'  => $start
+                ], [
+                    'TB' => 'fn_apagar.data_vencimento',
+                    'OP' => '<=',
+                    'P'  => $final
+                ])
+                ->max(10000)
+                ->orderBy('data_vencimento', 'asc')
+                ->filter(self::$FILTER),
 
-        $pagas = $eloquent
-            ->where('status', 'P')
-            ->whereBetween('data_baixa', [$start, $end])
-            ->get();
+            'pagas' => $eloquent
+                ->grid([
+                    'TB' => 'fn_apagar.status',
+                    'OP' => '=',
+                    'P'  => 'F'
+                ], [
+                    'TB' => 'fn_apagar.data_pagamento',
+                    'OP' => '>=',
+                    'P'  => $start
+                ], [
+                    'TB' => 'fn_apagar.data_pagamento',
+                    'OP' => '<=',
+                    'P'  => $final
+                ])
+                ->max(10000)
+                ->orderBy('data_pagamento', 'asc')
+                ->filter(self::$FILTER),
 
-        return [
-            'abertas' => $abertas,
-            'agendadas' => $agendadas,
-            'pagas' => $pagas,
         ];
+
+        return $despesas;
     }
 }

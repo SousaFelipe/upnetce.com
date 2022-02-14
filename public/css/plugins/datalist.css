@@ -1,0 +1,32 @@
+
+
+
+div[list] {
+    display:        none;
+    position:       absolute;
+    width:          100%;
+    max-height:     164px;
+    overflow-y:     auto;
+    background:     #FFF;
+    border:         var(--border);
+    border-top:     none;
+    border-radius:  0 0 5px 5px;
+    box-shadow:     0 3px 3px -3px #333;
+    z-index:        100;
+}
+
+div[list] span {
+    display:            block;
+    padding:            7px 5px 7px 20px;
+    color:              #069;
+    text-decoration:    none;
+    cursor:             pointer;
+}
+
+div[list] span:not(:last-child) {
+    border-bottom: 1px solid #EEE;
+}
+
+div[list] span:hover {
+    background: rgba(100, 120, 140, .2);
+}

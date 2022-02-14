@@ -4,9 +4,28 @@
 let novaReceitaModalElement = document.getElementById('novaReceitaModal')
 let novaReceitaModal = new bootstrap.Modal(novaReceitaModalElement)
 
+let novaDespesaModalElement = document.getElementById('novaDespesaModal')
+let novaDespesaModal = new bootstrap.Modal(novaDespesaModalElement)
+
+let finderDespesaCategoria = new Finder('finder-despesa-categoria', 'Categoria')
+let finderDespesaFornecedor = new Finder('finder-despesa-fornecedor', 'Fornecedor')
+let finderDespesaConta = new Finder('finder-despesa-conta_caixa', 'Conta/Caixa')
+
+let receitasRemotasRecebidas = 0
+let receitasRemotasAreceber = 0
+
+let despesasRemotasPagas = 0
+let despesasRemotasEmAberto = 0
+
 
 
 $(function () {
+
+    $('#selectPeriodo').children(`option[value="${ window.APP.date().currentMonth() }"]`).attr('selected', true)
+    $('input[type="date"]').val( window.APP.date().today().split('/').reverse().join('-') )
+    $('#despesa-valor').mask("#.##0,00", {reverse: true})
+
+
 
     novaReceitaModalElement.addEventListener('shown.bs.modal', function (e) {
         new Request('financeiro/categorias/listar', {
@@ -17,43 +36,76 @@ $(function () {
                 sort_order: 'asc'
             }
         })
-        .get(async response => {
+        .get(response => {
             if (response.success === true) {
-                let categorias = await response.categorias
+                let categorias = response.categorias
                 fillSelectReceitasCategoria(categorias)
             }
         })
     })
 
-    novaReceitaModalElement.addEventListener('hidden.bs.modal', function (e) {
-        resetSelectReceitasCategoria()
+    novaDespesaModalElement.addEventListener('shown.bs.modal', function (e) {
+
+        new Request('financeiro/categorias/listar')
+            .before(() => finderDespesaCategoria.reset())
+            .get(response => {
+                response.categorias.forEach(categoria => {
+                    finderDespesaCategoria.option(categoria.id, categoria.nome)
+                })
+            })
+
+        new Request('cadastros/fornecedores/listar', { habilitado: 'S' })
+            .before(() => finderDespesaFornecedor.reset())
+            .get(response => {
+                response.fornecedores.forEach(fornecedor => {
+                    finderDespesaFornecedor.option(fornecedor.id, fornecedor.titulo)
+                })
+            })
+
+        new Request('financeiro/contas/listar')
+            .before(() => finderDespesaConta.reset())
+            .get(response => {
+                response.contas.forEach(conta => {
+                    finderDespesaConta.option(conta.id, conta.conta)
+                })
+            })
     })
 
-    let option = $('#selectPeriodo').children(`option[value="${ window.APP.date().currentMonth() }"]`)
-        option.attr('selected', true)
-
-    loadReceitasIXC()
+    loadDashboardByPeriod()
 })
 
 
 
-let loadReceitasIXC = function () {
+let loadDashboardByPeriod = function () {
 
     let selectPeriodo = document.getElementById('selectPeriodo')
     let periodo = selectPeriodo.options[selectPeriodo.selectedIndex].value
 
-    new Request(`financeiro/receitas/ixc/baixadas/${ periodo }`)
-        .before(resetReceitasIXC)
-        .after(() => { $('span[id*="receitas-"].wrap-loader').removeClass('loading') })
-        .get(async response => {
-            let receitas = await response.receitas
-            loadCardReceitas(receitas)
+    new Request(`financeiro/receitas/listar`, { periodo: periodo })
+        .before(() => {
+            resetReceitas()
+            resetDespesas()
+            resetSaldo()
         })
+        .after(() => {
+            new Request(`financeiro/despesas/listar`, { periodo: periodo })
+                .after(() => {
+                    loadCardResumo()
+                })
+                .get(response => {
+                    loadCardDespesas(response.despesas)
+                })
+        })
+        .get(response => {
+            loadCardReceitas(response.receitas)
+        })
+
+    loadBalance(periodo)
 }
 
 
 
-let resetReceitasIXC = function () {
+let resetReceitas = function () {
     $('span[id*="receitas-"].wrap-loader').addClass('loading')
     $('#receitas-recebidas-titulo').empty()
     $('#receitas-recebidas').empty()
@@ -61,153 +113,86 @@ let resetReceitasIXC = function () {
 }
 
 
-
-let resetSelectReceitasCategoria = function () {
-    $('#receita-categoria').empty()
-    $(`<option value="0">Selecionar</option>`).appendTo($('#receita-categoria'))
+let resetDespesas = function () {
+    $('span[id*="despesas-"].wrap-loader').addClass('loading')
+    $('#despesas-pagas-titulo').empty()
+    $('#despesas-pagas').empty()
+    $('#despesas-emaberto').empty()   
 }
 
 
-
-let fillSelectReceitasCategoria = function(categorias) {
-    let option = null
-
-    resetSelectReceitasCategoria()
-
-    categorias.forEach(categoria => {
-        option = new Option(categoria.id).render(categoria.nome)
-        $(option).appendTo($('#receita-categoria')) 
-    })
-}
-
-
-
-let checkReceitas = function (receitas) {
-    return receitas.abertas && receitas.agendadas && receitas.recebidas
-}
-
-
-
-let checkDespesas = function (despesas) {
-    return despesas.abertas && despesas.agendadas && despesas.pagas
-}
-
-
-
-let loadPeriodo = function () {
-
-    let selectPeriodo = document.getElementById('selectPeriodo')
-    let periodo = selectPeriodo.options[selectPeriodo.selectedIndex].value
-
-    let receitas = []
-    let despesas = []
-
-    new Request(`financeiro/receitas/listar/${ periodo }`)
-        .get(response => {
-            receitas = response.receitas
-            
-            if (checkReceitas(receitas)) {
-                loadCardReceitas(receitas)
-
-                if (checkDespesas(despesas)) {
-                    loadCardResumo(receitas, despesas)
-                }
-            }
-
-            $('span[id*="receitas-"] > .wrap-loader').removeClass('loading')
-        })
-    
-    new Request(`financeiro/despesas/listar/${ periodo }`)
-        .get(response => {
-            despesas = response.despesas
-
-            if (checkDespesas(despesas)) {
-                loadCardDespesas(despesas)
-
-                if (checkReceitas(receitas)) {
-                    loadCardResumo(receitas, despesas)
-                }
-            }
-        })
+let resetSaldo = function () {
+    $('span[id*="saldo-"].wrap-loader').addClass('loading')
+    $('span[id="saldo-titulo"]').empty()
+    $('span[id="saldo-atual"]').empty()
+    $('span[id="saldo-previsto"]').empty()  
 }
 
 
 
 let loadCardReceitas = function (receitas) {
+    $('span[id*="receitas-"].wrap-loader').removeClass('loading')
 
-    let totalRecebido = 0
-    let totalAreceber = 0
+    let remotas = receitas.remote
 
-    if (receitas.recebidas && receitas.recebidas.length > 0) {
-        for (let i = 0; i < receitas.recebidas.length; i++) {
-            totalRecebido += parseFloat(receitas.recebidas[i].valor_recebido)
+    receitasRemotasRecebidas = 0
+    receitasRemotasAreceber = 0
+
+    if (remotas.recebidas && remotas.recebidas.length > 0) {
+        for (let i = 0; i < remotas.recebidas.length; i++) {
+            receitasRemotasRecebidas += parseFloat(remotas.recebidas[i].valor_recebido)
         }
     }
 
-    if (receitas.areceber && receitas.areceber.length > 0) {
-        for (let i = 0; i < receitas.areceber.length; i++) {
-            totalAreceber += parseFloat(receitas.areceber[i].valor)
+    if (remotas.areceber && remotas.areceber.length > 0) {
+        for (let i = 0; i < remotas.areceber.length; i++) {
+            receitasRemotasAreceber += parseFloat(remotas.areceber[i].valor)
         }
     }
 
     $('span[id="receitas-recebidas-titulo"]').text('Receitas')
-    $('span[id="receitas-recebidas"]').text(mask(totalRecebido).money())
-    $('span[id="receitas-areceber"]').text(`A receber: ${ mask(totalAreceber).money() }`)
+    $('span[id="receitas-recebidas"]').text(mask(receitasRemotasRecebidas).money())
+    $('span[id="receitas-areceber"]').text(`A receber: ${ mask(receitasRemotasAreceber).money() }`)
 }
-
 
 
 let loadCardDespesas = function (despesas) {
+    $('span[id*="despesas-"].wrap-loader').removeClass('loading')
 
-    let totalDespesasPagas = 0
-    let totalDespesasAgendadas = 0
+    let remotas = despesas.remote
 
-    if (despesas.pagas.length > 0) {
-        totalDespesasPagas = despesas.pagas.reduce((acc, a) => (
-            acc + a.valor
-        ))
+    despesasRemotasPagas = 0
+    despesasRemotasEmAberto = 0
+
+    if (remotas.pagas.length > 0) {
+        for (let i = 0; i < remotas.pagas.length; i++) {
+            despesasRemotasPagas += parseFloat(remotas.pagas[i].valor_total_pago)
+        }
     }
 
-    if (despesas.agendadas.length > 0) {
-        totalDespesasAgendadas = despesas.agendadas.reduce((acc, a) => (
-            acc + a.valor
-        ))
+    if (remotas.em_aberto.length > 0) {
+        for (let i = 0; i < remotas.em_aberto.length; i++) {
+            despesasRemotasEmAberto += parseFloat(remotas.em_aberto[i].valor_aberto)
+        }
     }
 
-    $('span[id="despesas-pagas"]').text(mask(totalDespesasPagas).money())
-    $('span[id="despesas-agendadas"]').text(`A pagar: ${ mask(totalDespesasAgendadas).money() }`)
+    $('span[id="despesas-pagas-titulo"]').text('Despesas')
+    $('span[id="despesas-pagas"]').text(mask(despesasRemotasPagas).money())
+    $('span[id="despesas-emaberto"]').text(`Em aberto: ${ mask(despesasRemotasEmAberto).money() }`)
 }
 
 
+let loadCardResumo = function () {
+    $('span[id*="saldo-"].wrap-loader').removeClass('loading')
 
-let loadCardResumo = function (receitas, despesas) {
+    let saldoAtual = (receitasRemotasRecebidas - despesasRemotasPagas)
 
-    let totalReceitasRecebidas = 0
-    let totalReceitasAgendadas = 0
+    let saldoPrevisto = (
+        (receitasRemotasRecebidas + receitasRemotasAreceber) - (despesasRemotasPagas + despesasRemotasEmAberto)
+    )
 
-    let totalDespesasPagas = 0
-    let totalDespesasAgendadas = 0
-
-    if (receitas.recebidas.length > 0) {
-        totalReceitasRecebidas = receitas.recebidas.reduce((acc, a) => (acc + a.valor))
-    }
-
-    if (receitas.agendadas.length > 0) {
-        totalReceitasAgendadas = receitas.agendadas.reduce((acc, a) => (acc + a.valor))
-    }
-
-    if (despesas.pagas.length > 0) {
-        totalDespesasPagas = despesas.pagas.reduce((acc, a) => (acc + a.valor))
-    }
-
-    if (despesas.agendadas.length > 0) {
-        totalDespesasAgendadas = despesas.agendadas.reduce((acc, a) => (acc + a.valor))
-    }
-
-    let saldoReal = totalReceitasRecebidas - totalDespesasPagas
-    let saldoPrevisto = ((totalReceitasRecebidas + totalReceitasAgendadas) - (totalDespesasPagas + totalDespesasAgendadas))
-
-    $('span[id="saldo"]').text(mask(saldoReal).money())
+    $('span[id="saldo-titulo"]').text('Saldo')
+    $('span[id="saldo-atual"]').text(mask(saldoAtual).money())
     $('span[id="saldo-previsto"]').text(`Previsto: ${ mask(saldoPrevisto).money() }`)
 }
 

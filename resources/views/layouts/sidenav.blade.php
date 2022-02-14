@@ -49,15 +49,19 @@
                                     <option class="text-tertiary" value="0">Nenhuma...</option>
                                 </select>
                             </div>
-                            <div class="col-12 mb-3">
+                            <div class="col-8 mb-3">
                                 <label for="titulo-categoria" class="form-label">Título</label>
                                 <input type="email" id="titulo-categoria" class="form-control" placeholder="Nome da categoria">
+                            </div>
+                            <div class="col-4 mb-3">
+                                <label for="idixc-categoria" class="form-label">Equivalente IXC</label>
+                                <input type="number" id="idixc-categoria" class="form-control" placeholder="ID no IXC">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" onclick="salvarCategoria(true)">Salvar e Sair</button>
-                        <button type="button" class="btn btn-primary" onclick="salvarCategoria(false)">Salvar</button>
+                        <button type="button" class="btn btn-lg btn-secondary" onclick="closeNovaCategoriaModal()">Cancelar</button>
+                        <button type="button" class="btn btn-lg btn-primary" onclick="salvarCategoria()">Salvar</button>
                     </div>
                 </div>
             </div>
@@ -69,7 +73,7 @@
             </a>
             <div class="navbar-search-control flex-grow-1">
                 <input type="text" id="search-control" class="search-control" placeholder="Nome ou CPF do (a) cliente..." aria-label="Nome ou CPF do (a) cliente...">
-                <button type="button" class="btn btn-default btn-sm text-white mb-1" onclick="closeSearch()">
+                <button type="button" id="navbar-search-close" class="btn btn-default btn-sm text-white mb-1" onclick="closeSearch()">
                     <i data-feather="x"></i>
                 </button>
             </div>
@@ -117,6 +121,11 @@
                                     <span data-feather="trending-down"></span> Despesas
                                 </a>
                             </li>
+                            <li class="nav-item @yield('fornecedores', '')">
+                                <a class="nav-link" href="/cadastros/fornecedores">
+                                    <span data-feather="truck"></span> Fornecedores
+                                </a>
+                            </li>
                         </ul>
             
                         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -162,11 +171,16 @@
         <script src="{{ asset('js/app/components/Card.js') }}"></script>
         <script src="{{ asset('js/app/components/Circle.js') }}"></script>
         <script src="{{ asset('js/app/components/Collapse.js') }}"></script>
+        <script src="{{ asset('js/app/components/Finder.js') }}"></script>
         <script src="{{ asset('js/app/components/Link.js') }}"></script>
         <script src="{{ asset('js/app/components/Option.js') }}"></script>
         <script src="{{ asset('js/app/components/Span.js') }}"></script>
         <script src="{{ asset('js/app/components/Text.js') }}"></script>
-        
+
+        <script src="{{ asset('js/app/contracts/Contrato.js') }}"></script>
+        <script src="{{ asset('js/app/contracts/Login.js') }}"></script>
+        <script src="{{ asset('js/app/contracts/Cliente.js') }}"></script>
+
         <script src="{{ asset('js/layout/sidenav.js') }}"></script>
 
         @yield('layout-scripts')

@@ -12,7 +12,7 @@ use App\Utils\Vetor;
 class BaseModel extends Model
 {
     protected $srcname;
-    protected $token;
+    protected $token = false;
 
     private $ixc        = null;
     private $when       = null;
@@ -188,7 +188,7 @@ class BaseModel extends Model
         $this->prepare();
 
         $this->ixc->get($this->srcname, $this->when);
-        $data = $this->ixc->getRespostaConteudo();
+        $data = $this->ixc->getContentResponse();
         return isset($data['registros']) ? $data['registros'] : [];
     }
 
@@ -198,7 +198,7 @@ class BaseModel extends Model
     {
         $this->ixc = new IXCClient($this->token);
         $this->ixc->put($this->srcname, $data, $target);
-        return $this->ixc->getRespostaConteudo();
+        return $this->ixc->getContentResponse();
     }
 
 
@@ -212,7 +212,7 @@ class BaseModel extends Model
         $this->ixc = new IXCClient($this->token);
         $this->ixc->post($this->srcname, $post);
 
-        $data = $this->ixc->getRespostaConteudo();
+        $data = $this->ixc->getContentResponse();
         return $data;
     }
 

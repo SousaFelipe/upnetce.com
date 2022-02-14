@@ -4,6 +4,9 @@
 
 use App\Http\Controllers\AppController;
 
+use App\Http\Controllers\Cadastros\AppController as CdAppConrtoller;
+use App\Http\Controllers\Cadastros\FornecedorController as CdFornecedorController;
+
 use App\Http\Controllers\Cadastros\IXC\ClienteController as IXCClienteController;
 
 use App\Http\Controllers\Suporte\IXC\OsController as IXCOsController;
@@ -11,11 +14,13 @@ use App\Http\Controllers\Suporte\IXC\OsController as IXCOsController;
 use App\Http\Controllers\Financeiro\AuthController as FnAuthController;
 use App\Http\Controllers\Financeiro\AppController as FnController;
 use App\Http\Controllers\Financeiro\CategoriaController as FnCategoriaController;
+use App\Http\Controllers\Financeiro\ContaController as FnContaController;
 use App\Http\Controllers\Financeiro\ReceitasController as FnReceitasController;
 use App\Http\Controllers\Financeiro\DespesasController as FnDespesasController;
 
 use App\Http\Controllers\Financeiro\IXC\ContratoController as IXCContratoController;
 use App\Http\Controllers\Financeiro\IXC\ReceitasController as IXCReceitasController;
+use App\Http\Controllers\Financeiro\IXC\DespesasController as IXCDespesasController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -33,7 +38,15 @@ Route::prefix('/')->group(function () {
 Route::prefix('/cadastros')->name('cadastros.')->group(function () {
 
     Route::prefix('/clientes')->group(function () {
-        Route::get('/listar/{slug}', [IXCClienteController::class, 'listar']);
+        Route::get('/listar/{slug?}', [IXCClienteController::class, 'listar']);
+    });
+
+    Route::prefix('/fornecedores')->group(function () {
+        Route::get('/', [CdAppConrtoller::class, 'fornecedores'])->name('fornecedores');
+        Route::get('/listar', [CdFornecedorController::class, 'listar']);
+        Route::post('/criar', [CdFornecedorController::class, 'criar']);
+        Route::put('/editar', [CdFornecedorController::class, 'editar']);
+        Route::delete('/remover', [CdFornecedorController::class, 'remover']);
     });
 
 });
@@ -70,13 +83,13 @@ Route::prefix('/financeiro')->name('financeiro.')->group(function () {
 
         Route::prefix('/receitas')->group(function () {
             Route::get('/', [FnController::class, 'receitas'])->name('receitas');
-            Route::get('/listar/{periodo}', [FnReceitasController::class, 'listar']);
-            Route::get('/ixc/baixadas/{periodo}', [IXCReceitasController::class, 'baixas']);
+            Route::get('/listar', [FnReceitasController::class, 'listar']);
         });
 
         Route::prefix('/despesas')->group(function () {
             Route::get('/', [FnController::class, 'despesas'])->name('despesas');
-            Route::get('/listar/{periodo}', [FnDespesasController::class, 'listar']);
+            Route::get('/listar', [FnDespesasController::class, 'listar']);
+            Route::post('/criar', [FnDespesasController::class, 'criar']);
         });
 
         Route::prefix('/categorias')->group(function () {
@@ -88,6 +101,12 @@ Route::prefix('/financeiro')->name('financeiro.')->group(function () {
             Route::post('/criar', [FnCategoriaController::class, 'criar']);
             Route::put('/editar', [FnCategoriaController::class, 'editar']);
             Route::delete('/remover', [FnCategoriaController::class, 'remover']);
+
+        });
+
+        Route::prefix('/contas')->group(function () {
+
+            Route::get('/listar/{filters?}', [FnContaController::class, 'listar']);
 
         });
 

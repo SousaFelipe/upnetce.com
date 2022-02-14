@@ -8,31 +8,77 @@ use App\Models\Financeiro\Receita;
 
 class ReceitaRepo extends Repository
 {
-    public static function create(array $novaReceita)
+    private static $FILTER = [
+        'id',
+        'id_ixc',
+        'id_cliente',
+        'id_contrato',
+        'id_cobranca',
+        'id_carteira_cobranca',
+        'filial_id',
+        'documento',
+        'data_emissao',
+        'data_cancelamento',
+        'baixa_data',
+        'pagamento_data',
+        'data_vencimento',
+        'pagamento_valor',
+        'valor',
+        'valor_aberto',
+        'valor_cancelado',
+        'valor_recebido',
+        'previsao',
+        'obs'
+    ];
+
+
+    public static function query($user, $start, $final)
     {
-
-    }
-
-
-
-    public static function queryByPeriodo($provedor, $start, $end)
-    {
-        $eloquent = self::bind(Receita::class)
-            ->where('provedor', $provedor);
+        $eloquent = self::bind(Receita::Class)->assign($user->ixc_token);
 
         $areceber = $eloquent
-            ->where('status', 'A')
-            ->whereBetween('data_agendamento', [$start, $end])
-            ->get();
+            ->grid([
+                'TB' => 'fn_areceber.status',
+                'OP' => '!=',
+                'P'  => 'R'
+            ], [
+                'TB' => 'fn_areceber.status',
+                'OP' => '!=',
+                'P'  => 'C'
+            ], [
+                'TB' => 'fn_areceber.data_vencimento',
+                'OP' => '>=',
+                'P'  => $start
+            ], [
+                'TB' => 'fn_areceber.data_vencimento',
+                'OP' => '<=',
+                'P'  => $final
+            ])
+            ->orderBy('data_vencimento')
+            ->max(100000)
+            ->filter(self::$FILTER);
 
         $recebidas = $eloquent
-            ->where('status', 'R')
-            ->whereBetween('data_baixa', [$start, $end])
-            ->get();
+            ->grid([
+                'TB' => 'fn_areceber.status',
+                'OP' => '=',
+                'P'  => 'R'
+            ], [
+                'TB' => 'fn_areceber.pagamento_data',
+                'OP' => '>=',
+                'P'  => $start
+            ], [
+                'TB' => 'fn_areceber.pagamento_data',
+                'OP' => '<=',
+                'P'  => $final
+            ])
+            ->orderBy('pagamento_data')
+            ->max(100000)
+            ->filter(self::$FILTER);
 
         return [
             'areceber' => $areceber,
-            'recebidas' => $recebidas,
+            'recebidas' => $recebidas
         ];
     }
 }

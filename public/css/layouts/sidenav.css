@@ -124,7 +124,7 @@ body {
     background-color:   #373b3e;
     color:              white;
 }
-  
+
 .navbar .form-control {
     padding:        0.75rem 1rem;
     border-width:   0;
@@ -219,19 +219,10 @@ body {
     overflow:           auto;
 }
 
-#wrap::-webkit-scrollbar {
-    width: 10px;
-}
 
-#wrap::-webkit-scrollbar-track {
-    background-color:   rgba(0, 0, 0, 0.10);
-    border-left:        1px solid rgba(0, 0, 0, 0.15);
-}
 
-#wrap::-webkit-scrollbar-thumb {
-    background-color:   darkgrey;
-    border:             1px solid rgba(0, 0, 0, 0.15);
-    outline:            none;
+#navbar-search-close {
+    display: none;
 }
 
 
@@ -248,7 +239,7 @@ body {
     padding-bottom:     8px;
     background-color:   white;
     z-index:            1;
-    overflow:           hidden;
+    overflow:           auto;
 }
 
 #search-container > header {

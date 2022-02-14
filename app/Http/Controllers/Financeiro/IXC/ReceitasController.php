@@ -37,7 +37,7 @@ class ReceitasController extends Controller
 
 
     
-    public function baixas(Request $request, Receita $receita)
+    public function listar(Request $request, Receita $receita)
     {
         $user = Auth::user();
 

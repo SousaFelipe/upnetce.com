@@ -2,11 +2,13 @@
 namespace App\Http\Controllers\Financeiro;
 
 
-use App\Repositories\Financeiro\ReceitaRepo;
 use App\Http\Controllers\Controller;
 
-use Illuminate\Support\Carbon;
+use App\Models\Financeiro\Receita;
+use App\Repositories\Financeiro\ReceitaRepo;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -14,23 +16,32 @@ class ReceitasController extends Controller
 {
     public function listar(Request $request)
     {
-        $receitas = [
-            'areceber' => [],
-            'recebidas' => []
-        ];
+        if (($user = Auth::user()) != null) {
 
-        if ($request->periodo == 0) {
+            $eloquent = Receita::where('provedor', $user->provedor);
+            $start = Carbon::parse('1 ' . $request->periodo)->toDateString();
+            $end = Carbon::parse($request->periodo)->endOfMonth()->toDateString();
 
+            $local = [
+
+                'areceber' => $eloquent
+                    ->where('status', 'A')
+                    ->whereBetween('data_vencimento', [$start, $end])
+                    ->get(),
+
+                'recebidas' => $eloquent
+                    ->where('status', 'R')
+                    ->whereBetween('pagamento_data', [$start, $end])
+                    ->get()
+
+            ];
+
+            $receitas = [
+                'local' => $local,
+                'remote' => ReceitaRepo::query($user, $start, $end)
+            ];
+
+            return $this->json($receitas, 'receitas');
         }
-        else {
-            $periodo = '1 ' . $request->periodo;
-
-            $start = Carbon::parse($periodo)->toDateTimeString();
-            $end = Carbon::parse($request->periodo)->subMonthsNoOverflow()->endOfMonth()->toDateTimeString();
-
-            $receitas = ReceitaRepo::queryByPeriodo(Auth::user()->provedor, $start, $end);
-        }
-
-        return $this->json($receitas, 'receitas');
     }
 }

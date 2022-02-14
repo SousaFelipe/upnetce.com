@@ -9,7 +9,7 @@ class IXCClient implements \Iterator, \ArrayAccess
     private $token;
     private $selfSigned;
     private $responseBody;
-    private $decoded_resposta;
+    private $decoded_response;
     private $responseHeaders;
     private $headers = [];
 
@@ -135,12 +135,12 @@ class IXCClient implements \Iterator, \ArrayAccess
 
     
     
-    public function getRespostaConteudo()
+    public function getContentResponse()
     {
-        $this->decoded_resposta = json_decode($this->responseBody, true);
+        $this->decoded_response = json_decode($this->responseBody, true);
 
-        if ($this->responseBody && $this->decoded_resposta) {
-            return $this->array_map_recursive('utf8_decode', $this->decoded_resposta);
+        if ($this->responseBody && $this->decoded_response) {
+            return $this->array_map_recursive('utf8_decode', $this->decoded_response);
         }
 
         return [
@@ -163,7 +163,7 @@ class IXCClient implements \Iterator, \ArrayAccess
 
     
     
-    public function getResposta_cabecalho()
+    public function getResponseHeader()
     {
         return $this->responseHeaders;
     }
@@ -172,35 +172,35 @@ class IXCClient implements \Iterator, \ArrayAccess
     
     public function current()
     {
-        return current($this->decoded_resposta);
+        return current($this->decoded_response);
     }
 
 
 
     public function key()
     {
-        return key($this->decoded_resposta);
+        return key($this->decoded_response);
     }
 
     
     
     public function next()
     {
-        return next($this->decoded_resposta);
+        return next($this->decoded_response);
     }
 
     
     
     public function valid()
     {
-        return is_array($this->decoded_resposta) && (key($this->decoded_resposta) !== NULL);
+        return is_array($this->decoded_response) && (key($this->decoded_response) !== NULL);
     }
 
     
     
     public function rewind()
     {
-        $this->getRespostaConteudo(true);
+        $this->getContentResponse(true);
         return reset($this->responseBody);
     }
 
@@ -208,7 +208,7 @@ class IXCClient implements \Iterator, \ArrayAccess
 
     public function offsetExists($chave)
     {
-        $this->getRespostaConteudo(true);
+        $this->getContentResponse(true);
 
         return is_array($this->responseBody)
             ? isset($this->responseBody[$chave])
@@ -219,15 +219,15 @@ class IXCClient implements \Iterator, \ArrayAccess
 
     public function offsetGet($chave)
     {
-        $this->decode_resposta();
+        $this->decode_response();
 
         if (!$this->offsetExists($chave)) {
             return NULL;
         }
 
-        return is_array($this->decoded_resposta)
-            ? $this->decoded_resposta[$chave]
-            : $this->decoded_resposta->{$chave};
+        return is_array($this->decoded_response)
+            ? $this->decoded_response[$chave]
+            : $this->decoded_response->{$chave};
     }
 
 

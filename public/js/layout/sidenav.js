@@ -79,16 +79,15 @@ let fillSelectDespesasCategoria = function(categorias) {
 let loadCategorias = function () {
 
     new Request('financeiro/categorias/listar', {
-        provedor: provedorID,
         filters: { tipo: 'D' },
         params: {
             order_by: 'nome',
             sort_order: 'asc'
         }
     })
-    .get(async response => {
+    .get(response => {
         if (response.success === true) {
-            categorias = await response.categorias
+            categorias = response.categorias
 
             if (categorias.length > 0) {
 
@@ -194,16 +193,13 @@ let renderCategoriaOption = function (categoria) {
 
 
 
-let salvarCategoria = function (fechar = false) {
+let salvarCategoria = function () {
 
-    let selectSob = $('#sob-categoria')
-    let selectTipo = $('#tipo-categoria')
-    let checkFixa = $('#categoria-fixa')
-    let inputNome = $('#titulo-categoria')
-
-    let tipo = selectTipo.find(":selected").val()
-    let fixa = checkFixa.is(':checked')
-    let nome = inputNome.val()
+    let categoria = $('#sob-categoria').find(":selected").val()
+    let tipo = $('#tipo-categoria').find(":selected").val()
+    let fixa = $('#categoria-fixa').is(':checked')
+    let nome = $('#titulo-categoria').val()
+    let id_ixc = $('#idixc-categoria').val()
 
     if (tipo == 0 || tipo == '0') {
         $('#tipo-categoria').trigger("focus")
@@ -214,30 +210,17 @@ let salvarCategoria = function (fechar = false) {
         alert('Por favor, insira o nome da categoria!')
     }
     else {
-
-        let categoria = {
-            provedor: provedorID,
-            user: userID,
-            categoria: selectSob.find(":selected").val(),
-            nome: nome,
-            tipo: tipo,
-            fixa: fixa
-        }
     
-        new Request('financeiro/categorias/criar', categoria)
+        new Request('financeiro/categorias/criar', {
+                id_ixc: id_ixc,
+                categoria: categoria,
+                nome: nome,
+                tipo: tipo,
+                fixa: fixa
+            })
             .post(response => {
                 if (response.success === true) {
-                    
-                    selectSob.val(0).change()
-                    selectTipo.val(0).change()
-                    inputNome.val('')
-                
-                    if (fechar) {
-                        categoriasModal.hide()
-                    }
-                    else {
-                        $('#titulo-categoria').focus()
-                    }
+                    closeNovaCategoriaModal()
                 }
                 else {
                     alert('Ocorreu um erro ao salvar este registro!')
@@ -249,28 +232,40 @@ let salvarCategoria = function (fechar = false) {
 
 
 let startSearchClientes = function (slug) {
+    clearTimeout(searchTimeout)
 
     $('#search-result-items').empty()
-    searchContainterElement.style.display = 'flex'
-    clearTimeout(searchTimeout)
+    $('#navbar-search-close').css({ 'display': 'block' })
+    $('#search-container').css({ 'display': 'flex' })
 
     searchTimeout = setTimeout(() => {
 
         new Request(`cadastros/clientes/listar/${ slug }`)
             .get(response => {
 
+                let clienteCtt = null
+                let renderedCliente = null
+
                 response.clientes.forEach(cliente => {
 
-                    $(new Card(cliente.id).classes('text-dark bg-light ms-4 me-4 mt-2 mb-1').render(getRenderedClienteData(cliente)))
+                    clienteCtt = new Cliente(cliente)
+                    renderedCliente = getRenderedClienteData(clienteCtt)
+
+                    $(new Card(cliente.id).classes('text-dark bg-light ms-4 me-4 mt-2 mb-1').render(renderedCliente))
                         .appendTo($('#search-result-items'))
 
-                    if (cliente.ordens_de_servico && cliente.ordens_de_servico.length > 0) {
+                    if (clienteCtt.osPendente()) {
                         $(`<span class="badge rounded-pill bg-info ms-1"><i data-feather="tool"></i></span>`)
                             .appendTo($(`#card-body-alerts-${ cliente.id }`))
                     }
 
-                    if (cliente.alerta && cliente.alert != '') {
-                        $(`<span class="badge rounded-pill bg-warning ms-1"><i data-feather="alert-triangle"></i></span>`)
+                    if (cliente.alerta != '') {
+                        $(`<span class="badge rounded-pill bg-warning ms-1"><i data-feather="message-circle"></i></span>`)
+                            .appendTo($(`#card-body-alerts-${ cliente.id }`))
+                    }
+
+                    if (clienteCtt.bloqueado()) {
+                        $(`<span class="badge rounded-pill bg-danger ms-1"><i data-feather="lock"></i></span>`)
                             .appendTo($(`#card-body-alerts-${ cliente.id }`))
                     }
                 })
@@ -282,9 +277,11 @@ let startSearchClientes = function (slug) {
 }
 
 
+let stopSearchClientes = function () {
+    
+    $('#navbar-search-close').css({ 'display': 'none' })
+    $('#search-container').css({ 'display': 'none' })
 
-let stopSearchClientes = function (slug) {
-    searchContainterElement.style.display = 'none'
     clearInterval(searchTimeout)
     searchTimeout = null
 }
@@ -294,7 +291,19 @@ let stopSearchClientes = function (slug) {
 let closeSearch = function () {
     searchControlElement.value = ''
     $('#search-result-items').empty()
-    searchContainterElement.style.display = 'none'
+    $('#navbar-search-close').css({ 'display': 'none' })
+    $('#search-container').css({ 'display': 'none' })
+}
+
+
+let closeNovaCategoriaModal = function () {
+
+    $('#sob-categoria').val(0).change()
+    $('#tipo-categoria').val(0).change()
+    $('#titulo-categoria').val('')
+
+    categoriasModal.previousModal = null
+    categoriasModal.hide()
 }
 
 
@@ -307,12 +316,10 @@ let getRenderedClienteData = function (cliente) {
     let complemento = new Text('2').render(cliente.complemento)
     let cell = new Text('2').render(cliente.telefone_celular)
     let whats = new Text('2').render(cliente.whatsapp)
-
-    let ativo = cliente.ativo == 'S'
     
     let col1 = new Column('1')
         .classes('d-flex flex-row justify-content-center align-items-center pe-0')
-        .render(new Circle('md', ativo ? 'green' : 'gray').render(`<span data-feather="${ ativo ? 'user' : 'x' }"></span>`))
+        .render(new Circle('md', cliente.ativo('color')).render(cliente.ativo('icon')))
 
     let col2 = new Column('4').classes('d-flex flex-column').render(razao + cpf)
     let col3 = new Column('4').classes('d-flex flex-column').render(endereco + complemento)
@@ -320,48 +327,6 @@ let getRenderedClienteData = function (cliente) {
     
     return new Flex('row')
         .render(new Row().classes('d-flex flex-row align-items-center flex-grow-1').render(col1 + col2 + col3 + col4))
-}
-
-
-
-let getRenderedLoginContrato = function (logins, contratos) {
-        
-    let ativos = contratos && contratos.length > 0
-        ? contratos.reduce((acc, a) => (acc + (a.status == 'A') ? 1 : 0))
-        : 0
-    
-    if (contratos && contratos.length > 0 && ativos > 0) {
-
-        let bloqueados = contratos && contratos.reduce((acc, a) => (acc + (a.status_internet == 'CA') ? 1 : 0))
-
-        let iconLogin = (logins[0].online == 'S') ? 'rss' : 'slash'
-        let colorLogin = (logins[0].online == 'S') ? 'green' : 'orange'
-
-        let iconCtt = (bloqueados > 0) ? 'lock' : (ativos > 0) ? 'check-circle' : 'x'
-        let colorCtt = (bloqueados > 0) ? 'danger' : (ativos > 0) ? 'success' : 'gray'
-
-        return (`
-            <div class="d-flex flex-row">
-                <div class="row d-flex flex-row align-items-center flex-grow-1 mt-2 pt-1 pb-1">
-                    <div class="col-1"></div>
-                    <div class="col-4 d-flex flex-row align-items-center">
-                        <span class="circle-xs bg-white">
-                            <i data-feather="${ iconLogin }" class="text-${ colorLogin }"></i>
-                        </span>
-                        <span class="fs-2 ms-2">${ logins[0].login }</span>
-                    </div>
-                    <div class="col-4 d-flex flex-row align-items-center">
-                        <span class="circle-xs bg-${ colorCtt }">
-                            <i data-feather="${ iconCtt }"></i>
-                        </span>
-                        <span class="fs-2 ms-2">30MB POR R$60,00 (FIBRA LIGHT)</span>
-                    </div>
-                </div>
-            </div>
-        `)
-    }
-    
-    return ''
 }
 
 

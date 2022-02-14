@@ -20,14 +20,20 @@ class CreateDespesasTable extends Migration
             $table->bigInteger('provedor');
             $table->bigInteger('user');
             $table->bigInteger('categoria');
-            $table->bigInteger('orcamento')->nullable();
             $table->bigInteger('despesa')->nullable();
+            $table->bigInteger('orcamento')->nullable();
+
+            $table->string('codigo_barras', 32)->nullable();
+            $table->date('data_cancelamento')->nullable();
+            $table->double('valor_aberto', 8, 2)->nullable();
+            $table->double('valor_cancelado', 8, 2)->nullable();
+            $table->double('valor_pago', 8, 2)->nullable();
+            $table->double('valor_total_pago', 8, 2)->nullable();
+            $table->enum('tipo_pagamento', [])->default('D');
+
 
             $table->double('valor', 8, 2);
             $table->enum('status', ['A', 'R', 'C'])->default('A');
-            $table->dateTime('data_abertura');
-            $table->dateTime('data_agendamento')->nullable();
-            $table->dateTime('data_baixa')->nullable();
             $table->enum('parcelada', ['S', 'N'])->default('N');
         });
     }

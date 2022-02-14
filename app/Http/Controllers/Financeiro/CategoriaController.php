@@ -2,8 +2,10 @@
 namespace App\Http\Controllers\Financeiro;
 
 
-use App\Repositories\Financeiro\CategoriaRepo;
 use App\Http\Controllers\Controller;
+
+use App\Models\Financeiro\Categoria;
+use App\Repositories\Financeiro\CategoriaRepo;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +24,8 @@ class CategoriaController extends Controller
 
     public function subcategoria(Request $request)
     {
-        $categorias = CategoriaRepo::queryBySob(Auth::user()->provedor, $request->categoria);
+        $user = Auth::user();
+        $categorias = CategoriaRepo::queryBySob($user->provedor, $request->categoria);
 
         return view('financeiro.categorias', [
             'categoria' => $request->categoria,
@@ -34,11 +37,12 @@ class CategoriaController extends Controller
 
     public function listar(Request $request)
     {
-        $params = $request->params;
+        $user = Auth::user();
+        $filters = $request->has('filters') ? $request->filters : [];
 
-        $categorias = $request->has('filters')
-            ? CategoriaRepo::queryAll($request->provedor, $request->filters)
-            : CategoriaRepo::queryAll($request->provedor, []);
+        $categorias = (count($filters) > 0)
+            ? Categoria::where('provedor', $user->provedor)->where($filters)->get()
+            : Categoria::where('provedor', $user->provedor)->get();
 
         $response = [
             'success' => ($categorias != null),
@@ -52,9 +56,12 @@ class CategoriaController extends Controller
 
     public function criar(Request $request)
     {
+        $user = Auth::user();
+
         $categoria = CategoriaRepo::create([
-            'provedor'  => $request->provedor,
-            'user'      => $request->user,
+            'id_ixc'    => $request->id_ixc,
+            'provedor'  => $user->provedor,
+            'user'      => $user->id,
             'categoria' => $request->categoria,
             'nome'      => $request->nome,
             'tipo'      => $request->tipo

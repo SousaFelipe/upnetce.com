@@ -16,14 +16,21 @@ class CategoriaRepo extends Repository
 
 
 
-    public static function queryAll($provedorID, $filters = [])
+    public static function queryAll($user)
     {
         $eloquent = self::bind(Categoria::class)
-            ->where('provedor', $provedorID);
+            ->assign($user->ixc_token);
 
-        return (count($filters) > 0)
-            ? $eloquent->where($filters)->get()
-            : $eloquent->get();
+        $categorias = $eloquent
+            ->grid([
+                'TB' => 'planejamento.planejamento',
+                'OP' => 'L',
+                'P'  => 'fornecedores'
+            ])
+            ->orderBy('id', 'asc')
+            ->receive();
+
+        return $categorias;
     }
 
 
