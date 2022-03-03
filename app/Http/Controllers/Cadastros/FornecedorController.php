@@ -45,6 +45,31 @@ class FornecedorController extends Controller
 
     public function editar(Request $request)
     {
+        if (($user = Auth::user()) != null) {
+
+            $rows = Fornecedor::where('provedor', $user->provedor)
+                ->where('id_ixc', $request->id_fornecedor)
+                ->update($request->except('id_fornecedor'));
+
+            return $this->json([
+                'success' => $rows > 0
+            ]);
+        }
+
+        return $this->unauthorized();
+    }
+
+
+
+    public function sync(Request $request)
+    {
+        if (($user = Auth::user()) != null) {
+            return $this->json([
+                'success' => FornecedorRepo::syncDown($user, $request->id_fornecedor)
+            ]);
+        }
+
+        return $this->unauthorized();
     }
 
 

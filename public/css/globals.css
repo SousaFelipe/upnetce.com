@@ -1,13 +1,24 @@
 
 
 
+
 :root {
 
-    --bg-cyan:      rgb(13,202,240);
-    --bg-green:     rgb(31,214,129);
-    --bg-orange:    rgb(255,139,79);
-    --bg-gray:      rgb(176, 190, 197);
+    --gray-900: #263238;
+    --gray-700: #455A64;
+    --gray-500: #607D8B;
+    --gray-300: #90A4AE;
+    --gray-100: #CFD8DC;
 
+}
+
+
+
+
+td {
+    white-space:    nowrap;
+    overflow:       hidden;
+    text-overflow:  ellipsis;
 }
 
 
@@ -36,6 +47,10 @@
 .h-100 { height:    100%; }
 
 
+.scroll {
+    overflow-y: scroll !important;
+}
+
 .dropdown-item,
 .clickable {
     cursor:     pointer;
@@ -43,10 +58,10 @@
 }
 
 
-.bg-cyan { background-color: var(--bg-cyan); }
-.bg-green { background-color: var(--bg-green); }
+.bg-cyan   { background-color: var(--bg-cyan);   }
+.bg-green  { background-color: var(--bg-green);  }
 .bg-orange { background-color: var(--bg-orange); }
-.bg-gray { background-color: var(--bg-gray); }
+.bg-gray   { background-color: var(--bg-gray);   }
 
 
 *[class*="circle-"] {
@@ -109,7 +124,8 @@
 .bold { font-weight: bold; }
 
 
-
-.text-primary { color: #263238 !important; }
-.text-secondary { color: #455A64 !important; }
-.text-tertiary { color: #607D8B !important; }
+.txt-gray-900 { color: var(--gray-900) !important; }
+.txt-gray-700 { color: var(--gray-700) !important; }
+.txt-gray-500 { color: var(--gray-500) !important; }
+.txt-gray-300 { color: var(--gray-300) !important; }
+.txt-gray-100 { color: var(--gray-100) !important; }

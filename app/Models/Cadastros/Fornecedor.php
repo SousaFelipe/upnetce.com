@@ -14,6 +14,7 @@ class Fornecedor extends BaseModel
 
 
     protected $fillable = [
+        'id',
         'id_ixc',
         'provedor',
         'user',
@@ -31,6 +32,7 @@ class Fornecedor extends BaseModel
         'fantasia',
         'razao',
         'titulo',
-        'sync'
+        'sincronizado_em',
+        'atualizado_em'
     ];
 }

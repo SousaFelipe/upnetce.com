@@ -46,4 +46,39 @@ class DespesasController extends Controller
 
         return $this->json($despesas, 'despesas');
     }
+
+
+
+    public function criar(Request $request)
+    {
+        if (($user = Auth::user()) != null) {
+
+            $despesa = Despesa::create([
+                'filial_id'         => $user->filial_id,
+                'provedor'          => $user->provedor,
+                'user'              => $user->id,
+                'categoria'         => $request['sob_categoria'],
+                'despesa'           => $request['sob_despesa'],
+                'orcamento'         => $request['orcamento'],
+                'codigo_barras'     => $request['codigo_barras'],
+                'valor_aberto'      => $request['valor'],
+                'tipo_pagamento'    => $request['tipo_pagamento'],
+                'data_emissao'      => $request['data_emissao'],
+                'data_vencimento'   => $request['data_vencimento'],
+                'valor'             => $request['valor'],
+                'documento'         => $request['documento'],
+                'id_conta'          => $request['categoria'],
+                'id_contas'         => $request['conta_caixa'],
+                'id_fornecedor'     => $request['id_fornecedor'],
+                'obs'               => $request['obs'],
+            ]);
+    
+            return $this->json([
+                'success' => $despesa != null,
+                'despesa' => $despesa
+            ]);
+        }
+
+        return $this->unauthorized();
+    }
 }

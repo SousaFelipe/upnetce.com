@@ -18,6 +18,8 @@
 
     <body>
 
+        @yield('alerts')
+
         @yield('modal-content')
 
         <div id="categoriasModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="categoriasModalLabel" aria-hidden="true">
@@ -67,83 +69,81 @@
             </div>
         </div>
 
-        <header class="d-flex flex-row justify-content-between align-items-center sticky-top bg-dark shadow">
-            <a class="navbar-brand text-white" href="/financeiro/dashboard">
-                <strong>Darth</strong> <small>&#x276F;</small> {{ Auth::user()->name() }}
-            </a>
-            <div class="navbar-search-control flex-grow-1">
-                <input type="text" id="search-control" class="search-control" placeholder="Nome ou CPF do (a) cliente..." aria-label="Nome ou CPF do (a) cliente...">
-                <button type="button" id="navbar-search-close" class="btn btn-default btn-sm text-white mb-1" onclick="closeSearch()">
-                    <i data-feather="x"></i>
-                </button>
-            </div>
-            <div class="navbar-nav">
-                <div class="nav-item text-nowrap">
-                    <span class="nav-link text-white px-3" onclick="logout()" style="cursor: pointer;">
-                        Sair &nbsp; <span data-feather="log-out"></span>
-                    </span>
-                </div>
-            </div>
-        </header>
-
         <div id="search-container" class="container-fluid">
             <div class="row justify-content-center">
-                <div id="search-result-items" class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
-                    
-                </div>
+                <div id="search-result-items" class="col-sm-12 col-md-12 col-lg-12 col-xl-10"></div>
             </div>
         </div>
+        
+        <nav id="sidebarMenu" class="d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
 
-        <div id="wrap" class="container-fluid">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @yield('dashboard', '')" aria-current="page" href="/financeiro/dashboard">
+                            <span data-feather="home"></span> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item @yield('planilhas', '')">
+                        <a class="nav-link" href="/financeiro/planilhas">
+                            <span data-feather="file-text"></span> Planilhas
+                        </a>
+                    </li>
+                    <li class="nav-item @yield('receitas', '')">
+                        <a class="nav-link" href="/financeiro/receitas">
+                            <span data-feather="trending-up"></span> Receitas
+                        </a>
+                    </li>
+                    <li class="nav-item @yield('despesas', '')">
+                        <a class="nav-link" href="/financeiro/despesas">
+                            <span data-feather="trending-down"></span> Despesas
+                        </a>
+                    </li>
+                    <li class="nav-item @yield('fornecedores', '')">
+                        <a class="nav-link" href="/cadastros/fornecedores">
+                            <span data-feather="truck"></span> Fornecedores
+                        </a>
+                    </li>
+                </ul>
+
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Categorias</span>
+                    <span class="link-secondary clickable" aria-label="Nova Categoria" data-bs-toggle="modal" data-bs-target="#categoriasModal">
+                        <span data-feather="plus-circle"></span>
+                    </span>
+                </h6>
+
+                <ul id="categorias-nav-container" class="nav flex-column ps-3 pt-2 pe-3">
+                </ul>
+
+            </div>
+        </nav>
+
+        <div id="wrap" class="container-fluid bg-light">
             <div class="row justify-content-center">
 
-                <nav id="sidebarMenu" class="d-md-block bg-light sidebar collapse">
-                    <div class="position-sticky pt-3">
+                <header class="d-flex flex-row justify-content-between align-items-center sticky-top bg-white border-bottom">
             
-                        <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link @yield('dashboard', '')" aria-current="page" href="/financeiro/dashboard">
-                                    <span data-feather="home"></span> Dashboard
-                                </a>
-                            </li>
-                            <li class="nav-item @yield('planilhas', '')">
-                                <a class="nav-link" href="/financeiro/planilhas">
-                                    <span data-feather="file-text"></span> Planilhas
-                                </a>
-                            </li>
-                            <li class="nav-item @yield('receitas', '')">
-                                <a class="nav-link" href="/financeiro/receitas">
-                                    <span data-feather="trending-up"></span> Receitas
-                                </a>
-                            </li>
-                            <li class="nav-item @yield('despesas', '')">
-                                <a class="nav-link" href="/financeiro/despesas">
-                                    <span data-feather="trending-down"></span> Despesas
-                                </a>
-                            </li>
-                            <li class="nav-item @yield('fornecedores', '')">
-                                <a class="nav-link" href="/cadastros/fornecedores">
-                                    <span data-feather="truck"></span> Fornecedores
-                                </a>
-                            </li>
-                        </ul>
-            
-                        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                            <span>Categorias</span>
-                            <span class="link-secondary clickable" aria-label="Nova Categoria" data-bs-toggle="modal" data-bs-target="#categoriasModal">
-                                <span data-feather="plus-circle"></span>
-                            </span>
-                        </h6>
-            
-                        <ul id="categorias-nav-container" class="nav flex-column ps-3 pt-2 pe-3">
-                        </ul>
+                    <div class="navbar-search-control flex-grow-1">
+                        <input type="text" id="search-control" class="search-control" placeholder="Nome ou CPF do (a) cliente..." aria-label="Nome ou CPF do (a) cliente...">
+                        <button type="button" id="navbar-search-close" class="btn btn-default btn-sm mb-1" onclick="closeSearch()">
+                            <i data-feather="x"></i>
+                        </button>
                     </div>
-            
-                </nav>
+                    <div class="navbar-nav">
+                        <div class="nav-item text-nowrap">
+                            <span class="nav-link px-3" onclick="logout()">
+                                Sair &nbsp; <span data-feather="log-out"></span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                </header>
 
-                <main class="col-sm-12 col-md-12 col-lg-12 col-xl-10">
+                <main class="col-sm-12 col-md-12 col-lg-12 col-xl-10 mb-4">
 
                     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        
                         <h1 class="h2">@yield('page')</h1>
                         
                         @yield('subheader-control')
@@ -165,6 +165,8 @@
 
         <script src="{{ asset('js/http/Request.js') }}"></script>
         <script src="{{ asset('js/app/contents/Flex.js') }}"></script>
+        <script src="{{ asset('js/app/contents/Table.js') }}"></script>
+        <script src="{{ asset('js/app/components/Alert.js') }}"></script>
         <script src="{{ asset('js/app/components/nav/Item.js') }}"></script>
         <script src="{{ asset('js/app/components/grid/Row.js') }}"></script>
         <script src="{{ asset('js/app/components/grid/Column.js') }}"></script>
@@ -174,9 +176,11 @@
         <script src="{{ asset('js/app/components/Finder.js') }}"></script>
         <script src="{{ asset('js/app/components/Link.js') }}"></script>
         <script src="{{ asset('js/app/components/Option.js') }}"></script>
+        <script src="{{ asset('js/app/components/RadioGroup.js') }}"></script>
         <script src="{{ asset('js/app/components/Span.js') }}"></script>
         <script src="{{ asset('js/app/components/Text.js') }}"></script>
 
+        <script src="{{ asset('js/app/contracts/Contract.js') }}"></script>
         <script src="{{ asset('js/app/contracts/Contrato.js') }}"></script>
         <script src="{{ asset('js/app/contracts/Login.js') }}"></script>
         <script src="{{ asset('js/app/contracts/Cliente.js') }}"></script>

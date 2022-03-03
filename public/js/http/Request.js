@@ -56,6 +56,30 @@ class Request {
     }
 
 
+    put (callback) {
+
+        if (this.beforeCallback != false)
+            this.beforeCallback.call(this)
+
+        $.ajax(
+            (this.data != false) ? {
+                method: "PUT",
+                url: this.url,
+                data: this.data
+            } : {
+                method: "PUT",
+                url: this.url
+            }
+        )
+        .done(async response => {
+            callback.call(this, await response)
+
+            if (this.afterCallback != false)
+                this.afterCallback.call(this)
+        })
+    }
+
+
     post (callback) {
 
         if (this.beforeCallback != false)

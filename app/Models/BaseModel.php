@@ -85,18 +85,6 @@ class BaseModel extends Model
 
 
     /**
-     * @param integer $id O id do registro a ser encontrado
-     */
-    public function match($id)
-    {
-        $this->qtype = $this->srcname . '.id';
-        $this->query = $id;
-        return $this->max(1);
-    }
-
-
-
-    /**
      * @param string $orderBy O nome do campo para organizar a busca
      * @param string $order   A ordem de organização da busca
      * -------------
@@ -169,16 +157,19 @@ class BaseModel extends Model
 
 
 
-    public function filter(array $just)
+    /**
+     * @param integer $id O id do registro a ser encontrado
+     */
+    public function match($query, $col = 'id')
     {
-        $registros = $this->receive();
-        $filtrados = array();
+        $this->qtype = $this->srcname . '.' . $col;
+        $this->query = $query;
+        
+        $received = $this->when($col, '=', $query)
+            ->max(1)
+            ->receive();
 
-        foreach ($registros as $registro) {
-            $filtrados[] = Vetor::just($just, $registro);
-        }
-
-        return $filtrados;
+        return (count($received) > 0) ? $received[0] : [];
     }
 
 
@@ -190,6 +181,20 @@ class BaseModel extends Model
         $this->ixc->get($this->srcname, $this->when);
         $data = $this->ixc->getContentResponse();
         return isset($data['registros']) ? $data['registros'] : [];
+    }
+
+
+
+    public function filter(array $just)
+    {
+        $registros = $this->receive();
+        $filtrados = array();
+
+        foreach ($registros as $registro) {
+            $filtrados[] = Vetor::just($just, $registro);
+        }
+
+        return $filtrados;
     }
 
 

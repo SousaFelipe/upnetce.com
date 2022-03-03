@@ -23,7 +23,7 @@ $(function () {
 
     $('#selectPeriodo').children(`option[value="${ window.APP.date().currentMonth() }"]`).attr('selected', true)
     $('input[type="date"]').val( window.APP.date().today().split('/').reverse().join('-') )
-    $('#despesa-valor').mask("#.##0,00", {reverse: true})
+    $('#despesa-valor').mask('#.##0,00', { reverse: true })
 
 
 
@@ -50,7 +50,7 @@ $(function () {
             .before(() => finderDespesaCategoria.reset())
             .get(response => {
                 response.categorias.forEach(categoria => {
-                    finderDespesaCategoria.option(categoria.id, categoria.nome)
+                    finderDespesaCategoria.option(categoria.id_ixc, categoria.nome)
                 })
             })
 
@@ -58,7 +58,7 @@ $(function () {
             .before(() => finderDespesaFornecedor.reset())
             .get(response => {
                 response.fornecedores.forEach(fornecedor => {
-                    finderDespesaFornecedor.option(fornecedor.id, fornecedor.titulo)
+                    finderDespesaFornecedor.option(fornecedor.id_ixc, fornecedor.titulo)
                 })
             })
 
@@ -164,6 +164,8 @@ let loadCardDespesas = function (despesas) {
     despesasRemotasPagas = 0
     despesasRemotasEmAberto = 0
 
+    console.log(remotas)
+
     if (remotas.pagas.length > 0) {
         for (let i = 0; i < remotas.pagas.length; i++) {
             despesasRemotasPagas += parseFloat(remotas.pagas[i].valor_total_pago)
@@ -199,43 +201,47 @@ let loadCardResumo = function () {
 
 
 let loadBalance = function (periodo) {
-    var ctx = document.getElementById('balanceChart')
+
+    let ctx = document.getElementById('balanceChart').getContext('2d')
+
+    let data = {
+        labels: [
+            'SEG',
+            'TER',
+            'QUA',
+            'QUI',
+            'SEX',
+            'SAB'
+        ],
+        datasets: [{
+            data: [
+                3450,
+                2560,
+                3220,
+                6841,
+                2605,
+                1982
+            ],
+            lineTension: 0.5,
+            backgroundColor: 'transparent',
+            borderColor: '#5C60F5',
+            borderWidth: 4,
+            pointBackgroundColor: '#4648b8'
+        }]
+    }
     
     new Chart(ctx, {
       
         type: 'line',
 
-        data: {
-            labels: [
-                'SEG',
-                'TER',
-                'QUA',
-                'QUI',
-                'SEX',
-                'SAB'
-            ],
-            datasets: [{
-                data: [
-                    3450,
-                    2560,
-                    3220,
-                    6841,
-                    2605,
-                    1982
-                ],
-                lineTension: 0,
-                backgroundColor: 'transparent',
-                borderColor: '#007BFF',
-                borderWidth: 4,
-                pointBackgroundColor: '#007BFF'
-            }]
-        },
+        data: data,
 
         options: {
             scales: {
                 yAxes: [{
+                    color: '#FFFFFF',
                     ticks: {
-                        beginAtZero: false
+                        beginAtZero: true
                     }
                 }]
             },
@@ -248,12 +254,44 @@ let loadBalance = function (periodo) {
 
 
 
-let modalNovaReceita = function () {
+let salvarDespesa = function () {
+ 
+    let categoria = finderDespesaCategoria.current()
+    let fornecedor = finderDespesaFornecedor.current()
+    let conta_caixa = finderDespesaConta.current()
+    let valor = $('input[id="despesa-valor"]').val()
 
-}
-
-
-
-let modalNovaDespesa = function () {
-
+    if (categoria <= 0 || categoria == '') {
+        alert('Selecione a categoria!')
+    }
+    else if (fornecedor <= 0 || fornecedor == '') {
+        alert('Selecione um Fornecedor!')
+    }
+    else if (conta_caixa <= 0 || conta_caixa == '') {
+        alert('Selecione uma Conta/Caixa!')
+    }
+    else if (valor == null || valor == '' || valor == '0,00') {
+        alert('Por favor, insira o valor!')
+    }
+    else {
+        new Request('financeiro/despesas/criar', {
+            categoria:          categoria,
+            codigo_barras:      $('input[id="despesa-codigo"]').val(),
+            conta_caixa:        conta_caixa,
+            data_emissao:       $('input[id="despesa-emissao"]').val(),
+            data_vencimento:    $('input[id="despesa-vencimento"]').val(),
+            documento:          $('input[id="despesa-documento"]').val(),
+            id_fornecedor:      fornecedor,
+            obs:                $('input[id="despesa-obs"]').val(),
+            previsao:           new RadioGroup('btn-group-previsao').currentValue(),
+            tipo_pagamento:     new RadioGroup('btn-group-tipo_pagamento').currentValue(),
+            valor:              valor
+        })
+        .post(response => {
+            if (response.success) {
+                loadDashboardByPeriod()
+                novaDespesaModal.close()
+            }
+        })
+    }
 }

@@ -35,7 +35,7 @@ Route::prefix('/')->group(function () {
 
 
 
-Route::prefix('/cadastros')->name('cadastros.')->group(function () {
+Route::prefix('/cadastros')->middleware('auth')->name('cadastros.')->group(function () {
 
     Route::prefix('/clientes')->group(function () {
         Route::get('/listar/{slug?}', [IXCClienteController::class, 'listar']);
@@ -46,6 +46,7 @@ Route::prefix('/cadastros')->name('cadastros.')->group(function () {
         Route::get('/listar', [CdFornecedorController::class, 'listar']);
         Route::post('/criar', [CdFornecedorController::class, 'criar']);
         Route::put('/editar', [CdFornecedorController::class, 'editar']);
+        Route::put('/sync', [CdFornecedorController::class, 'sync']);
         Route::delete('/remover', [CdFornecedorController::class, 'remover']);
     });
 

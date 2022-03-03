@@ -11,10 +11,10 @@
 
 
 @section('alerts')
-    <div class="alert-container" data-darth-container-to="statusLoginAlert">
+    <div class="alert-container" data-alert-container-to="statusLoginAlert">
         <div id="statusLoginAlert" class="alert danger" role="alert">
             <div id="statusLoginAlertBody" class="alert-body text-white"></div>
-            <button class="btn-close-widget" data-darth-close="statusLoginAlert">
+            <button class="btn-close-widget" data-alert-close="statusLoginAlert">
                 <i class="material-icons-two-tone">close</i>
             </button>
         </div>

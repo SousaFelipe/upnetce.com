@@ -5,6 +5,7 @@ class Finder {
 
 
     constructor (id, defaultValue = false) {
+        this.id = id
 
         this.element = $(`div[id="${ id }"].data-finder`)
         this.defaultValue = defaultValue
@@ -13,8 +14,6 @@ class Finder {
         this.inputSelect = this.element.children('select[data-finder="select"]')
         this.btnClear = this.element.children('button[data-finder="clear"]')
         this.btnOpen = this.element.children('button[data-finder="open"]')
-
-        this.options = []
 
         this.loadInputAction()
         this.loadButtonActions()
@@ -72,8 +71,6 @@ class Finder {
         this.inputID.val('')
         this.inputSelect.empty()
 
-        this.options = []
-
         if (this.defaultValue) {
             $(`<option value="0">${ this.defaultValue }</option>`).appendTo(this.inputSelect)
         }
@@ -84,12 +81,12 @@ class Finder {
 
     option (value, text) {
         $(`<option id="${ this.id }-${ value }" value="${ value }">${ text }</option>`).appendTo(this.inputSelect)
-
-        this.options.push({
-            value: value,
-            text: text
-        })
-
         return this
+    }
+
+
+    current () {
+        let current = this.inputSelect.find(":selected")
+        return current.val()
     }
 }

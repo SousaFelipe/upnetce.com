@@ -92,10 +92,13 @@
                                 <div class="col-3">
                                     <label for="btn-group-previsao"><span class="text-muted fs-3">PREVISÃO</span></label>
                                     <div id="btn-group-previsao" class="btn-group d-flex flex-row justify-content-between" role="group">
-                                        <input type="radio" class="btn-check" name="options-outlined" id="despesa-previsao-sim" autocomplete="off">
+
+                                        <input type="radio" class="btn-check" name="options-outlined" id="despesa-previsao-sim" autocomplete="off" data-radio="S">
                                         <label class="btn btn-sm btn-outline-secondary flex-grow-1" for="despesa-previsao-sim"><span class="fs-3">SIM</span></label>
-                                        <input type="radio" class="btn-check" name="options-outlined" id="despesa-previsao-nao" autocomplete="off" checked>
+
+                                        <input type="radio" class="btn-check" name="options-outlined" id="despesa-previsao-nao" autocomplete="off" data-radio="N" checked>
                                         <label class="btn btn-sm btn-outline-secondary flex-grow-1" for="despesa-previsao-nao"><span class="fs-3">NÃO</span></label>
+
                                     </div>
                                 </div>
                             </div>
@@ -127,23 +130,25 @@
                         <div class="col-12 mb-2">
                             <label for="btn-group-tipo_pagamento"><span class="text-muted fs-3">TIPO DE PAGAMENTO</span></label>
                             <div id="btn-group-tipo_pagamento" class="btn-group d-flex flex-row justify-content-between" role="group">
-                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-boleto" autocomplete="off" checked>
+
+                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-boleto" autocomplete="off" data-radio="Boleto" checked>
                                 <label class="btn btn-sm btn-outline-secondary flex-grow-1" for="despesa-tipo-boleto">Boleto</label>
 
-                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-cheque" autocomplete="off">
+                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-cheque" autocomplete="off" data-radio="Cheque">
                                 <label class="btn btn-sm btn-outline-secondary flex-grow-1" for="despesa-tipo-cheque">Cheque</label>
 
-                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-cartao" autocomplete="off">
+                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-cartao" autocomplete="off" data-radio="Cartão">
                                 <label class="btn btn-sm btn-outline-secondary flex-grow-1" for="despesa-tipo-cartao">Cartão</label>
 
-                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-dinheiro" autocomplete="off">
+                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-dinheiro" autocomplete="off" data-radio="Dinheiro">
                                 <label class="btn btn-sm btn-outline-secondary flex-grow-1" for="despesa-tipo-dinheiro">Dinheiro</label>
 
-                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-deposito" autocomplete="off">
+                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-deposito" autocomplete="off" data-radio="Depósito">
                                 <label class="btn btn-sm btn-outline-secondary flex-grow-1" for="despesa-tipo-deposito">Depósito</label>
 
-                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-transferencia" autocomplete="off">
+                                <input type="radio" class="btn-check" name="options-tipo_pagamento" id="despesa-tipo-transferencia" autocomplete="off" data-radio="Transferência">
                                 <label class="btn btn-sm btn-outline-secondary flex-grow-1" for="despesa-tipo-transferencia">Transferência</label>
+
                             </div>
                         </div>
                         <div class="col-12">
@@ -165,7 +170,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CANCELAR</button>
-                    <button type="button" class="btn btn-primary">SALVAR</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarDespesa()">SALVAR</button>
                 </div>
             </div>
         </div>
@@ -206,68 +211,58 @@
     <div class="row">
 
         <div class="col-sm-12 col-md-12 col-lg-4 pt-3">
-            <div class="card text-dark bg-light">
-                <span class="d-flex flex-row justify-content-end position-absolute w-100">
-                    <button class="btn btn-sm btn-default" data-bs-toggle="modal" data-bs-target="#novaReceitaModal">
-                        <span data-feather="plus-circle"></span>
-                    </button>
-                </span>
-                <div class="card-body">
-                    <div class="d-flex flex-row align-items-center">
-                        <span class="circle-lg bg-green">
+            <div class="card text-dark shadow-sm border-0">
+                <div class="card-body d-flex flex-column ps-4 pe-4">
+                    <div class="d-flex flex-row">
+                        <div class="d-flex flex-column justify-content-center flex-grow-1 me-sm-0 me-md-4 me-lg-3">
+                            <span id="receitas-recebidas-titulo" class="fs-3 txt-gray-500 wrap-loader" style="max-width: 140px; margin-bottom: 1px;"></span>
+                            <span id="receitas-recebidas" class="fs-4 bold txt-gray-900 wrap-loader" style="max-width: 250px"></span>
+                        </div>
+                        <span class="circle-md bg-success">
                             <span data-feather="trending-up"></span>
                         </span>
-                        <div class="d-flex flex-column justify-content-center flex-grow-1 ms-3 me-sm-0 me-md-4 me-lg-3">
-                            <span id="receitas-recebidas-titulo" class="fs-3 text-tertiary wrap-loader" style="max-width: 140px"></span>
-                            <span id="receitas-recebidas" class="fs-4 text-primary bold wrap-loader" style="max-width: 250px"></span>
-                            <span id="receitas-areceber" class="fs-1 text-secondary wrap-loader" style="max-width: 250px"></span>
-                        </div>
                     </div>
+                    <span id="receitas-areceber" class="fs-1 txt-gray-300 wrap-loader" style="max-width: calc(100% - 74px);"></span>
                 </div>
             </div>
         </div>
 
         <div class="col-sm-12 col-md-12 col-lg-4 pt-3">
-            <div class="card text-dark bg-light">
-                <span class="d-flex flex-row justify-content-end position-absolute w-100">
-                    <button class="btn btn-sm btn-default" data-bs-toggle="modal" data-bs-target="#novaDespesaModal">
-                        <span data-feather="plus-circle"></span>
-                    </button>
-                </span>
-                <div class="card-body">
+            <div class="card text-dark shadow-sm border-0">
+                <div class="card-body d-flex flex-column ps-4 pe-4">
                     <div class="d-flex flex-row align-items-center">
-                        <span class="circle-lg bg-orange">
+                        <div class="d-flex flex-column justify-content-center flex-grow-1 me-sm-0 me-md-4 me-lg-3">
+                            <span id="despesas-pagas-titulo" class="fs-3 txt-gray-500 wrap-loader" style="max-width: 140px; margin-bottom: 1px;"></span>
+                            <span id="despesas-pagas" class="fs-4 txt-gray-900 bold wrap-loader" style="max-width: 250px"></span>
+                        </div>
+                        <span class="circle-md bg-danger">
                             <span data-feather="trending-down"></span>
                         </span>
-                        <div class="d-flex flex-column justify-content-center flex-grow-1 ms-3 me-sm-0 me-md-4 me-lg-3">
-                            <span id="despesas-pagas-titulo" class="fs-3 text-tertiary wrap-loader" style="max-width: 140px"></span>
-                            <span id="despesas-pagas" class="fs-4 text-primary bold wrap-loader" style="max-width: 250px"></span>
-                            <span id="despesas-emaberto" class="fs-1 text-secondary wrap-loader" style="max-width: 250px"></span>
-                        </div>
                     </div>
+                    <span id="despesas-emaberto" class="fs-1 txt-gray-300 wrap-loader" style="max-width: calc(100% - 74px);"></span>
                 </div>
             </div>
         </div>
 
         <div class="col-sm-12 col-md-12 col-lg-4 pt-3">
-            <div class="card text-dark bg-light">
-                <div class="card-body">
+            <div class="card text-dark shadow-sm border-0">
+                <div class="card-body d-flex flex-column ps-4 pe-4">
                     <div class="d-flex flex-row align-items-center">
-                        <span class="circle-lg bg-cyan">
+                        <div class="d-flex flex-column justify-content-center flex-grow-1 me-sm-0 me-md-4 me-lg-3">
+                            <span id="saldo-titulo" class="fs-3 txt-gray-500 wrap-loader" style="max-width: 140px; margin-bottom: 1px;"></span>
+                            <span id="saldo-atual" class="fs-4 txt-gray-900 bold wrap-loader" style="max-width: 250px"></span>
+                        </div>
+                        <span class="circle-md bg-info">
                             <span data-feather="bar-chart-2"></span>
                         </span>
-                        <div class="d-flex flex-column justify-content-center flex-grow-1 ms-3 me-sm-0 me-md-4 me-lg-3">
-                            <span id="saldo-titulo" class="fs-3 text-tertiary wrap-loader" style="max-width: 140px"></span>
-                            <span id="saldo-atual" class="fs-4 text-primary bold wrap-loader" style="max-width: 250px"></span>
-                            <span id="saldo-previsto" class="fs-1 text-secondary wrap-loader" style="max-width: 250px"></span>
-                        </div>
                     </div>
+                    <span id="saldo-previsto" class="fs-1 txt-gray-300 wrap-loader" style="max-width: calc(100% - 74px);"></span>
                 </div>
             </div>
         </div>
 
         <div class="col-12">
-            <div class="card bg-light mt-4">
+            <div class="card shadow-sm border-0 mt-4">
                 <div class="card-body pt-3 pb-2">
                     <canvas id="balanceChart" class="w-100" height="310"></canvas>
                 </div>
@@ -281,6 +276,5 @@
 
 
 @section('layout-scripts')
-    <script src="{{ asset('js/app/components/Alert.js') }}"></script>
     <script src="{{ asset('js/pages/financeiro/dashboard.js') }}"></script>
 @endsection

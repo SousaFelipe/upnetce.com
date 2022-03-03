@@ -6,7 +6,7 @@
     justify-content:    center;
     width:              100%;
     margin-top:         -200px;
-    padding-top:        30px;
+    z-index:            2000;
 }
 
 .alert {
@@ -14,6 +14,7 @@
     justify-content:    flex-start;
     align-items:        center;
     padding:            10px 10px 10px 20px;
+    margin-top:         70px;
     border-radius:      8px;
 }
 
@@ -24,9 +25,22 @@
 }
 
 
+.alert.success,
+.alert.success > button {
+    background-color: rgb(var(--bs-success-rgb));
+}
+
+.alert.success > button > i {
+    transition: color 0.2s ease-in;
+    color:      #25AF4F;
+}
+
+.alert.success > button:hover { background-color: #20CC53; }
+
+
 .alert.warning,
 .alert.warning > button {
-    background-color: #FFC107;
+    background-color: rgb(var(--bs-warning-rgb));
 }
 
 .alert.warning > button > i {
@@ -39,7 +53,7 @@
 
 .alert.danger,
 .alert.danger > button {
-    background-color: #DC3545;
+    background-color: rgb(var(--bs-danger-rgb));
 }
 
 .alert.danger > button > i {
@@ -104,6 +118,10 @@
 }
 
 
+
+.wrap-loader {
+    border-radius: 0.25rem;
+}
 
 .wrap-loader.loading {
     animation-duration:         1.25s;
