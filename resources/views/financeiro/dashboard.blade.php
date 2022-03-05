@@ -264,7 +264,7 @@
         <div class="col-12">
             <div class="card shadow-sm border-0 mt-4">
                 <div class="card-body pt-3 pb-2">
-                    <canvas id="balanceChart" class="w-100" height="310"></canvas>
+                    <canvas id="balanceChart" class="w-100" height="300"></canvas>
                 </div>
             </div>
         </div>

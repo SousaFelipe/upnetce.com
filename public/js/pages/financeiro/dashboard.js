@@ -25,8 +25,6 @@ $(function () {
     $('input[type="date"]').val( window.APP.date().today().split('/').reverse().join('-') )
     $('#despesa-valor').mask('#.##0,00', { reverse: true })
 
-
-
     novaReceitaModalElement.addEventListener('shown.bs.modal', function (e) {
         new Request('financeiro/categorias/listar', {
             provedor: provedorID,
@@ -88,16 +86,16 @@ let loadDashboardByPeriod = function () {
             resetSaldo()
         })
         .after(() => {
-            new Request(`financeiro/despesas/listar`, { periodo: periodo })
+            /*new Request(`financeiro/despesas/listar`, { periodo: periodo })
                 .after(() => {
                     loadCardResumo()
                 })
                 .get(response => {
                     loadCardDespesas(response.despesas)
-                })
+                })*/
         })
         .get(response => {
-            loadCardReceitas(response.receitas)
+            //loadCardReceitas(response.receitas)
         })
 
     loadBalance(periodo)
@@ -202,51 +200,57 @@ let loadCardResumo = function () {
 
 let loadBalance = function (periodo) {
 
-    let ctx = document.getElementById('balanceChart').getContext('2d')
+    const context = document.getElementById('balanceChart')
 
-    let data = {
-        labels: [
-            'SEG',
-            'TER',
-            'QUA',
-            'QUI',
-            'SEX',
-            'SAB'
-        ],
-        datasets: [{
-            data: [
-                3450,
-                2560,
-                3220,
-                6841,
-                2605,
-                1982
-            ],
-            lineTension: 0.5,
-            backgroundColor: 'transparent',
-            borderColor: '#5C60F5',
-            borderWidth: 4,
-            pointBackgroundColor: '#4648b8'
-        }]
-    }
-    
-    new Chart(ctx, {
-      
-        type: 'line',
+    new Chart(context, {
+        data: {
 
-        data: data,
+            datasets: [{
+                type: 'line',
+                data: [10, 20, 30, 40, 35, 25, 15, 20, 45, 5, 12, 27],
+                backgroundColor: 'rgba(92, 96, 245, 0.5)',
+                pointBackgroundColor: '#5C60F5',
+                borderColor: '#5C60F5',
+                lineTension: 0.35,
+                borderWidth: 3,
+            }],
+
+            labels: [
+                'Janeiro',
+                'Fevereiro',
+                'Março',
+                'Abril',
+                'Maio',
+                'Junho',
+                'Julho',
+                'Agosto',
+                'Setembro',
+                'Outubro',
+                'Novembro',
+                'Dezembro'
+            ]
+        },
 
         options: {
-            scales: {
-                yAxes: [{
-                    color: '#FFFFFF',
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
+
+            plugins: {
+                legend: {
+                    display: false
+                }
             },
-            legend: {
-                display: false
+
+            scales: {
+                x: {
+                    grid: {
+                        color: 'transparent'
+                    }
+                },
+                y: {
+                    grid: {
+                        color: '#E9ECEF'
+                    },
+                    beginAtZero: true
+                }
             }
         }
     })
